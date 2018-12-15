@@ -1,0 +1,105 @@
+id
+user_name
+user_hash
+system_generated_password
+pwd_last_changed
+authenticate_id
+sugar_login
+first_name
+last_name
+is_admin
+external_auth_only
+receive_notifications
+description
+date_entered
+date_modified
+modified_user_id
+created_by
+title
+department
+phone_home
+phone_mobile
+phone_work
+phone_other
+phone_fax
+status
+address_street
+address_city
+address_state
+address_country
+address_postalcode
+deleted
+portal_only
+show_on_employees
+employee_status
+messenger_id
+messenger_type
+reports_to_id
+is_group
+
+[missing fields] 
+address_city
+address_country
+address_postalcode
+address_state
+address_street
+authenticate_id
+created_by
+date_entered
+date_modified
+deleted
+department
+description
+employee_status
+external_auth_only
+first_name
+id
+is_admin
+is_group
+messenger_id
+messenger_type
+modified_user_id
+phone_fax
+phone_home
+phone_mobile
+phone_other
+phone_work
+portal_only
+pwd_last_changed
+receive_notifications
+reports_to_id
+show_on_employees
+status
+sugar_login
+system_generated_password
+title
+user_hash
+
+[fields to insert] 
+`last_name`, `user_name`, 
+[values to insert] 
+{$full_name}, {$login_id}, 
+[commands for nullable fields] 
+$full_name = isNullOrEmptyString($row['full_name']) ? "NULL" : "'{$row['full_name']}'";
+$login_id = isNullOrEmptyString($row['login_id']) ? "NULL" : "'{$row['login_id']}'";
+[script] 
+
+
+$full_name = isNullOrEmptyString($row['full_name']) ? "NULL" : "'{$row['full_name']}'";
+$login_id = isNullOrEmptyString($row['login_id']) ? "NULL" : "'{$row['login_id']}'";
+
+
+$q="insert into {$sugar_config['dbTo']}.users  " . 
+"( " . 
+"`last_name`, `user_name`" . 
+") " . 
+"values " . 
+"(" . 
+"{$full_name}, {$login_id}" . 
+")";
+$res = mysqli_query($toMySQLConn,$q);
+
+if($res === false) {
+$GLOBALS['log']->fatal(mysqli_error($toMySQLConn));
+}
+
