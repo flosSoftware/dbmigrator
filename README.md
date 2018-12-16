@@ -1,5 +1,8 @@
 # dbmigrator
-Tool for exporting DB tables between different schemas/databases. 
+This is a Java tool for exporting DB tables between different schemas/databases. 
 Offers a GUI to configure the process. 
-The result is a series of .php files which can be launched to perform data export/import.
-Supports the following DB: mysql, oracle, sql server. Works out of the box for SugarCRM but scripts can be easily configured to avoid use of SugarCRM objects.
+The result is a series of .php scripts that can be launched to perform data export/import.
+Supports the following DB: mysql, oracle, sql server. 
+Generated scripts work inside SugarCRM but can be customized to avoid use of SugarCRM objects/functions.
+## TODO
+I need this program to generate php scripts that use native DB function. ATM they work only in SugarCRM environments.
