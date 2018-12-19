@@ -18,7 +18,7 @@ class SqlsrvHandler extends DBHandler
 
     public function getRowCount($result)
     {
-        return null;
+        return sqlsrv_num_rows($result);
     }
 
     public function freeDbResult($dbResult)
