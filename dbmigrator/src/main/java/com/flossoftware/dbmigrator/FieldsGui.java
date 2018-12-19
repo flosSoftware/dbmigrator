@@ -43,13 +43,30 @@ public class FieldsGui extends Composite {
 	final public Table tableTbl;
 	final public TableColumn tableTblCol1;
 	final public TableColumn tableTblCol2;
+	
+	private Gui gui;
+	
+//	private DBMetadata dbMetaTo;
+//	private DBMetadata dbMetaFrom;
 
 	private int fieldsGuiListIndex;
 	
 	public FieldsGui(final Composite parent, final Shell shell, int style,
-			final ConfigGui configGuiFrom, final ConfigGui configGuiTo, final List<FieldsGui> fieldsGuiList) {
+			final ConfigGui configGuiFrom, final ConfigGui configGuiTo, 
+			final List<FieldsGui> fieldsGuiList
+			, 
+			Gui gui
+//			DBMetadata dbMetaFrom, DBMetadata dbMetaTo
+			) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
+		
+		this.gui = gui;
+		
+//		this.setDbMetaTo(dbMetaTo);
+//		this.setDbMetaFrom(dbMetaFrom);
+		
+		
 
 		this.shell = shell;
 		 
@@ -105,7 +122,7 @@ public class FieldsGui extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
-				DBMetadata dbMeta;
+				DBMetadata dbMeta = dis.getGui().getD1();
 				List<String> l1;
 				String[] a1;
 
@@ -121,7 +138,8 @@ public class FieldsGui extends Composite {
 
 					if (fromTableSelect.getSelectionIndex() >= 0) {
 
-						dbMeta = new DBMetadata(configGuiFrom.getPropHashMap());
+						//dbMeta = new DBMetadata(configGuiFrom.getPropHashMap());
+						System.out.println(dbMeta);
 
 						l1 = dbMeta.getColumnsForTable(fromTableSelect.getItem(fromTableSelect
 								.getSelectionIndex()));
@@ -140,7 +158,7 @@ public class FieldsGui extends Composite {
 					tableItem.setData("cb2", cb2);
 
 					if (toTableSelect.getSelectionIndex() >= 0) {
-						dbMeta = new DBMetadata(configGuiTo.getPropHashMap());
+						//dbMeta = new DBMetadata(configGuiTo.getPropHashMap());
 
 						l1 = dbMeta.getColumnsForTable(toTableSelect.getItem(fromTableSelect
 								.getSelectionIndex()));
@@ -204,7 +222,7 @@ public class FieldsGui extends Composite {
 
 					shell.setSize(newSize);
 
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -226,17 +244,18 @@ public class FieldsGui extends Composite {
 		
 		fieldTblCol3 = new TableColumn(fieldTbl, SWT.NONE);
 		fieldTblCol3.setText("");
+		
 
 		fromTableSelect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
 				TableItem[] items = fieldTbl.getItems();
-				DBMetadata dbMeta;
+				DBMetadata dbMeta = dis.getGui().getD1();
 
 				try {
 
-					dbMeta = new DBMetadata(configGuiFrom.getPropHashMap());
+					//dbMeta = new DBMetadata(configGuiFrom.getPropHashMap());
 
 					for (TableItem tItem : items) {
 
@@ -251,7 +270,7 @@ public class FieldsGui extends Composite {
 						c.setItems(a1);
 					}
 
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 
@@ -263,11 +282,11 @@ public class FieldsGui extends Composite {
 			public void widgetSelected(SelectionEvent arg0) {
 
 				TableItem[] items = fieldTbl.getItems();
-				DBMetadata dbMeta;
+				DBMetadata dbMeta = dis.getGui().getD2();
 
 				try {
 
-					dbMeta = new DBMetadata(configGuiTo.getPropHashMap());
+					//dbMeta = new DBMetadata(configGuiTo.getPropHashMap());
 
 					for (TableItem tItem : items) {
 
@@ -282,7 +301,7 @@ public class FieldsGui extends Composite {
 						c.setItems(a1);
 					}
 
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 
@@ -434,6 +453,30 @@ public class FieldsGui extends Composite {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+
+//	public DBMetadata getDbMetaTo() {
+//		return dbMetaTo;
+//	}
+//
+//	public void setDbMetaTo(DBMetadata dbMetaTo) {
+//		this.dbMetaTo = dbMetaTo;
+//	}
+//
+//	public DBMetadata getDbMetaFrom() {
+//		return dbMetaFrom;
+//	}
+//
+//	public void setDbMetaFrom(DBMetadata dbMetaFrom) {
+//		this.dbMetaFrom = dbMetaFrom;
+//	}
+
+	public Gui getGui() {
+		return gui;
+	}
+
+	public void setGui(Gui gui) {
+		this.gui = gui;
 	}
 
 }

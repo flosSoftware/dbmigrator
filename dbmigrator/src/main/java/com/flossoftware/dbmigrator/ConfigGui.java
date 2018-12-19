@@ -36,6 +36,7 @@ public class ConfigGui extends Composite {
 	final public Button btnNuID;
 	final public boolean isToConfig;
 	final public AbstractFileConfiguration configProp;
+	private Gui gui;
 
 	/**
 	 * Create the composite.
@@ -44,10 +45,12 @@ public class ConfigGui extends Composite {
 	 * @param style
 	 * @throws ConfigurationException
 	 */
-	public ConfigGui(Composite parent, int style, String pPath,
-			final boolean aIsToConfig) throws ConfigurationException {
+	public ConfigGui(Composite parent, int style, String pPath, final boolean aIsToConfig, Gui gui)
+			throws ConfigurationException {
 		super(parent, style);
-		
+
+		this.gui = gui;
+
 		Monitor mon = Display.getDefault().getMonitors()[0];
 
 		isToConfig = aIsToConfig;
@@ -57,26 +60,22 @@ public class ConfigGui extends Composite {
 		setLayout(new GridLayout(3, false));
 
 		Label lblFile = new Label(this, SWT.NONE);
-		GridData g = new GridData(SWT.RIGHT, SWT.CENTER, true, false,
-				1, 1);
+		GridData g = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1);
 		lblFile.setLayoutData(g);
 		lblFile.setText("File");
 
 		Label lblPath = new Label(this, SWT.NONE);
-		GridData g2 = new GridData(SWT.RIGHT, SWT.CENTER, true, false,
-				2, 1);
-		
+		GridData g2 = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1);
+
 		g2.widthHint = mon.getBounds().width / 2 - 200;
 		lblPath.setLayoutData(g2);
 		lblPath.setText(pPath);
 
 		Label lblDriver = new Label(this, SWT.NONE);
-		lblDriver.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1));
+		lblDriver.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblDriver.setText("Driver");
 
-		String[] s = new String[] { "com.mysql.jdbc.Driver",
-				"net.sourceforge.jtds.jdbc.Driver",
+		String[] s = new String[] { "com.mysql.jdbc.Driver", "net.sourceforge.jtds.jdbc.Driver",
 				"oracle.jdbc.driver.OracleDriver" };
 		ArrayList<String> s1 = new ArrayList<String>(Arrays.asList(s));
 
@@ -88,12 +87,10 @@ public class ConfigGui extends Composite {
 			}
 		});
 		comboDriver.setItems(s);
-		comboDriver.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 2, 1));
+		comboDriver.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Label lblDB = new Label(this, SWT.NONE);
-		lblDB.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblDB.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblDB.setText("Database");
 
 		textDB = new Text(this, SWT.BORDER);
@@ -103,17 +100,14 @@ public class ConfigGui extends Composite {
 				setConnString();
 			}
 		});
-		textDB.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-				1));
+		textDB.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Label lblIp = new Label(this, SWT.NONE);
-		lblIp.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblIp.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblIp.setText("IP");
 
 		textIP = new Text(this, SWT.BORDER);
-		textIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-				1));
+		textIP.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		textIP.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -122,14 +116,12 @@ public class ConfigGui extends Composite {
 		});
 
 		Label lblPort = new Label(this, SWT.NONE);
-		lblPort.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblPort.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblPort.setText("Port");
 
 		textPort = new Text(this, SWT.BORDER);
-		textPort.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				2, 1));
-		
+		textPort.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+
 		textPort.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -138,39 +130,31 @@ public class ConfigGui extends Composite {
 		});
 
 		Label lblUser = new Label(this, SWT.NONE);
-		lblUser.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblUser.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblUser.setText("User");
 
 		textUser = new Text(this, SWT.BORDER);
-		textUser.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				2, 1));
+		textUser.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 		Label lblPw = new Label(this, SWT.NONE);
-		lblPw.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblPw.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblPw.setText("Pw");
 
 		textPw = new Text(this, SWT.BORDER);
-		textPw.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
-				1));
+		textPw.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		Label lblConn = new Label(this, SWT.NONE);
-		lblConn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblConn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblConn.setText("Connection");
 
 		textConn2 = new Text(this, SWT.BORDER);
-		textConn2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				1, 1));
+		textConn2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textConn2.setEnabled(false);
 
 		textConn = new Text(this, SWT.BORDER);
-		textConn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				1, 1));
+		textConn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblOverride = new Label(this, SWT.NONE);
-		lblOverride.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1));
+		lblOverride.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblOverride.setText("Destination Platform");
 
 		comboOverride = new Combo(this, SWT.NONE);
@@ -178,29 +162,24 @@ public class ConfigGui extends Composite {
 		String[] s2 = new String[] { "", "sugar" };
 		ArrayList<String> s3 = new ArrayList<String>(Arrays.asList(s2));
 		comboOverride.setItems(s2);
-		comboOverride.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 2, 1));
+		comboOverride.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		if (!isToConfig) {
 			lblOverride.setVisible(false);
 			comboOverride.setVisible(false);
 		}
-			
 
 		Label lblNuID = new Label(this, SWT.NONE);
-		lblNuID.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false,
-				1, 1));
+		lblNuID.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblNuID.setText("New ID");
 		btnNuID = new Button(this, SWT.CHECK);
 		if (!isToConfig) {
 			lblNuID.setVisible(false);
 			btnNuID.setVisible(false);
 		}
-			
 
 		comboDriver.select(s1.indexOf(configProp.getString("driver")));
 		if (isToConfig)
-			comboOverride.select(s3.indexOf(configProp
-					.getString("server_type_override")));
+			comboOverride.select(s3.indexOf(configProp.getString("server_type_override")));
 		textDB.setText(configProp.getString("database"));
 		textIP.setText(configProp.getString("ip"));
 		textPw.setText(configProp.getString("password"));
@@ -223,42 +202,40 @@ public class ConfigGui extends Composite {
 		HashMap<String, String> h = new HashMap<String, String>();
 
 		if (comboDriver.getSelectionIndex() > -1)
-			h.put("driver",
-					comboDriver.getItem(comboDriver.getSelectionIndex()));
+			h.put("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
 		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-			h.put("server_type_override",
-					comboOverride.getItem(comboOverride.getSelectionIndex()));
+			h.put("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		h.put("database", textDB.getText());
 		h.put("ip", textIP.getText());
 		h.put("password", textPw.getText());
 		h.put("port", textPort.getText());
 		h.put("user", textUser.getText());
-		h.put("connection", textConn2.getText()+textConn.getText());
+		h.put("connection", textConn2.getText() + textConn.getText());
 		if (isToConfig)
 			h.put("newId", "" + btnNuID.getSelection());
 
 		return h;
 	}
 
-	public void dbConnect(boolean refreshOnlyLastCompo) {
-
+	public DBMetadata dbConnect(boolean refreshOnlyLastCompo) {
+		DBMetadata dbMeta = null;
 		try {
-			DBMetadata dbMeta = new DBMetadata(getPropHashMap());
+			dbMeta = new DBMetadata(getPropHashMap());
 
 			List<String> l1 = dbMeta.getTables();
 
 			String[] a1 = new String[l1.size()];
 			a1 = l1.toArray(a1);
-			
-			if(refreshOnlyLastCompo) {
-				FieldsGui campiGui = Gui.fieldsGuiList.get(Gui.fieldsGuiList.size()-1);
+
+			if (refreshOnlyLastCompo) {
+				FieldsGui campiGui = gui.fieldsGuiList.get(gui.fieldsGuiList.size() - 1);
 				if (!isToConfig)
 					campiGui.fromTableSelect.setItems(a1);
 				else
 					campiGui.toTableSelect.setItems(a1);
-			} else 
+			} else
 
-				for (FieldsGui campiGui : Gui.fieldsGuiList) {
+				for (FieldsGui campiGui : gui.fieldsGuiList) {
 					if (!isToConfig)
 						campiGui.fromTableSelect.setItems(a1);
 					else
@@ -268,17 +245,15 @@ public class ConfigGui extends Composite {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-
+		return dbMeta;
 	}
 
 	public void saveFile() {
 
 		if (comboDriver.getSelectionIndex() > -1)
-			configProp.setProperty("driver",
-					comboDriver.getItem(comboDriver.getSelectionIndex()));
+			configProp.setProperty("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
 		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-			configProp.setProperty("server_type_override",
-					comboOverride.getItem(comboOverride.getSelectionIndex()));
+			configProp.setProperty("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		configProp.setProperty("database", textDB.getText());
 		configProp.setProperty("ip", textIP.getText());
 		configProp.setProperty("password", textPw.getText());
@@ -295,20 +270,19 @@ public class ConfigGui extends Composite {
 		}
 
 	}
-	
+
 	public void setConnString() {
-		
+
 		String s = comboDriver.getItem(comboDriver.getSelectionIndex());
 		if (s.equals("com.mysql.jdbc.Driver"))
-			textConn2.setText("jdbc:mysql://" + textIP.getText() + ":"
-					+ textPort.getText() + "/" + textDB.getText());
+			textConn2.setText("jdbc:mysql://" + textIP.getText() + ":" + textPort.getText() + "/" + textDB.getText());
 		else if (s.equals("net.sourceforge.jtds.jdbc.Driver"))
-			textConn2.setText("jdbc:jtds:sqlserver://"
-					+ textIP.getText() + ":" + textPort.getText() + "/"
-					+ textDB.getText() + ";instance=SQLEXPRESS");
+			textConn2.setText(
+					"jdbc:jtds:sqlserver://" + textIP.getText() + ":" + textPort.getText() + "/" + textDB.getText()
+			// + ";instance=SQLEXPRESS"
+			);
 		else
-			textConn2.setText("jdbc:oracle:thin:@//" + textIP.getText()
-					+ ":" + textPort.getText() + "/XE");
+			textConn2.setText("jdbc:oracle:thin:@//" + textIP.getText() + ":" + textPort.getText() + "/XE");
 	}
 
 }

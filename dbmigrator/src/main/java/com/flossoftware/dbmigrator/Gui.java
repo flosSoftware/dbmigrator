@@ -35,10 +35,12 @@ import org.eclipse.swt.widgets.TableItem;
 
 public class Gui {
 
-	public static List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
-	public static boolean hasConnected = false;
+	public List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
+	public boolean hasConnected = false;
+	private DBMetadata d1;
+	private DBMetadata d2;
 
-	private static void saveProps(final ConfigGui composite,
+	private void saveProps(final ConfigGui composite,
 			final ConfigGui composite2) throws IOException {
 		composite.saveFile();
 		composite2.saveFile();
@@ -100,20 +102,31 @@ public class Gui {
 	 * @param args
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
+	 * @throws ConfigurationException 
 	 */
 	public static void main(String[] args) throws ClassNotFoundException,
-			SQLException {
+			SQLException, ConfigurationException {
+		/*	DBMetadata dbMeta = new DBMetadata(new PropertiesConfiguration(
+				"config/from-db.properties"));
 
+		List<String> l1 = dbMeta.getTables();
+		
+		for (String string : l1) {
+			System.out.println(string);
+		}
+*/
 		try {
+			
+			final Gui gui = new Gui();
 			
 			PropertiesConfiguration p = new PropertiesConfiguration(
 					"tableMap.properties");
 
-			DBMetadata d1 = new DBMetadata(new PropertiesConfiguration(
-					"config/from-db.properties"));
+			gui.setD1(new DBMetadata(new PropertiesConfiguration(
+					"config/from-db.properties")));
 
-			DBMetadata d2 = new DBMetadata(new PropertiesConfiguration(
-					"config/to-db.properties"));
+			gui.setD2(new DBMetadata(new PropertiesConfiguration(
+					"config/to-db.properties")));
 
 			Display display = new Display();
 			final Shell shell = new Shell(display, SWT.SHELL_TRIM
@@ -142,12 +155,12 @@ public class Gui {
 
 
 			final ConfigGui composite = new ConfigGui(shell, SWT.NONE,
-					"config/from-db.properties", false);
+					"config/from-db.properties", false, gui);
 			composite.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
 					false, 1, 1));
 
 			final ConfigGui composite2 = new ConfigGui(shell, SWT.NONE,
-					"config/to-db.properties", true);
+					"config/to-db.properties", true, gui);
 			composite2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
 					false, 1, 1));
 			
@@ -176,10 +189,10 @@ public class Gui {
 						+ ".properties");
 
 				FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
-						composite, composite2, fieldsGuiList);
+						composite, composite2, gui.fieldsGuiList, gui);
 				composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 						true, false, 1, 1));
-				composite3.setFromConfig(p, d1, d2, tableFrom, tableTo);
+				composite3.setFromConfig(p, gui.getD1(), gui.getD2(), tableFrom, tableTo);
 				//fieldsGuiList.add(composite3);
 
 			}
@@ -191,7 +204,7 @@ public class Gui {
 			
 			
 
-			for (FieldsGui fGui : fieldsGuiList) {
+			for (FieldsGui fGui : gui.fieldsGuiList) {
 				fGui.size(shellSize);
 			}
 
@@ -204,9 +217,16 @@ public class Gui {
 			mntmConnect.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
-					composite.dbConnect(false);
-					composite2.dbConnect(false);
-					hasConnected = true;
+					try {
+						gui.getD1().getConnection2().close();
+						gui.getD2().getConnection2().close();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					gui.setD1(composite.dbConnect(false));
+					gui.setD2(composite2.dbConnect(false));
+					gui.hasConnected = true;
 				}
 			});
 
@@ -215,7 +235,7 @@ public class Gui {
 				public void widgetSelected(SelectionEvent arg0) {
 
 					FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
-							composite, composite2, fieldsGuiList);
+							composite, composite2, gui.fieldsGuiList, gui);
 					composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 							false, false, 2, 1));
 					composite3.size(shellSize);
@@ -223,9 +243,16 @@ public class Gui {
 					//fieldsGuiList.add(composite3);
 					shell.pack();
 
-					if (hasConnected) {
-						composite.dbConnect(true);
-						composite2.dbConnect(true);
+					if (gui.hasConnected) {
+						try {
+							gui.getD1().getConnection2().close();
+							gui.getD2().getConnection2().close();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						gui.setD1(composite.dbConnect(true));
+						gui.setD2(composite2.dbConnect(true));
 					}
 				}
 
@@ -236,7 +263,7 @@ public class Gui {
 				public void widgetSelected(SelectionEvent arg0) {
 					try {
 
-						saveProps(composite, composite2);
+						gui.saveProps(composite, composite2);
 
 						DBMigrator.doTheJob();
 
@@ -260,6 +287,23 @@ public class Gui {
 			e.printStackTrace();
 		}
 
+	}
+
+	public DBMetadata getD1() {
+		return d1;
+	}
+
+	public void setD1(DBMetadata d1) {
+		this.d1 = d1;
+		System.out.println("setting to ..." + d1);
+	}
+
+	public DBMetadata getD2() {
+		return d2;
+	}
+
+	public void setD2(DBMetadata d2) {
+		this.d2 = d2;
 	}
 
 }

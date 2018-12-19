@@ -86,17 +86,18 @@ public class DBMetadata {
 			System.out.println("Connection Failed!!!");
 			e.printStackTrace();
 			return;
-
 		}
+		
+		//System.out.println(this);
 	}
 	
 	public DBMetadata(HashMap<String, String> prop)
 			throws ClassNotFoundException, SQLException {
 		
-		for (String s : prop.values()) {
-
-			System.out.println(s);
-		}
+//		for (String s : prop.values()) {
+//
+//			System.out.println(s);
+//		}
 		this.setDriver(prop.get("driver"));
 		this.setConnection(prop.get("connection"));
 		this.setUser(prop.get("user"));
@@ -123,6 +124,12 @@ public class DBMetadata {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "DBMetadata [driver=" + driver + ", connection=" + connection + ", user=" + user + ", password="
+				+ password + ", connection2=" + connection2 + "]";
+	}
+
 	public boolean hasDeletedColumn(String table) throws SQLException {
 		List<String> list = getColumnsForTable(table);
 		if (list != null && list.contains("deleted")) {
@@ -138,7 +145,7 @@ public class DBMetadata {
 		try {
 
 			String catalog = null;
-			String schemaPattern = null;
+			String schemaPattern = "dbo";
 			String columnNamePattern = null;
 
 			DatabaseMetaData databaseMetaData = getConnection2().getMetaData();
@@ -155,7 +162,7 @@ public class DBMetadata {
 			return cols;
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("!!!" + e);
 		} finally {
 			if (result != null)
 				result.close();
@@ -480,10 +487,12 @@ public class DBMetadata {
 
 	public List<String> getTables() throws SQLException {
 
-		String catalog = null;
-		// getConnection2().getCatalog();
+		String catalog = 
+				//getConnection2().getCatalog();
+				null;
+		//System.out.println("--- CATALOG --- "+getConnection2().getCatalog());
 
-		String schemaPattern = null;
+		String schemaPattern = isSQLServer() ? "dbo" : null;
 		String tableNamePattern = null;
 		String[] types = null;
 		ResultSet result = null;
