@@ -1,39 +1,31 @@
 <?php
-if(!defined('sugarEntry'))define('sugarEntry', true);
-require_once 'include/entryPoint.php';
 
-$GLOBALS['log']->fatal('Start import members');
+global $logger;
+global $toDBHandler;
+global $fromDBHandler;
 
-$fromMySQLConn = mysqli_connect($sugar_config['ipFrom'],$sugar_config['usrFrom'],$sugar_config['pwFrom'],$sugar_config['dbFrom']);
+$logger->fatal('Start import members');
 
-if (mysqli_connect_errno()) { die(print_r(mysqli_connect_error(), true)); }
+$fromDBHandler->connect($dbConfig['ipFrom'], $dbConfig['usrFrom'], $dbConfig['pwFrom'], $dbConfig['dbFrom']);
 
-$toMySQLConn = mysqli_connect($sugar_config['ipTo'],$sugar_config['usrTo'],$sugar_config['pwTo'],$sugar_config['dbTo']);
-
-if (mysqli_connect_errno()) { die(print_r(mysqli_connect_error(), true)); }
+$toDBHandler->connect($dbConfig['ipFrom'], $dbConfig['usrFrom'], $dbConfig['pwFrom'], $dbConfig['dbFrom']);
 
 
 
-$query = "delete from {$sugar_config['dbTo']}.users";
-$result = mysqli_query($toMySQLConn,$query);
-
-if($result === false) {
-$GLOBALS['log']->fatal(mysqli_error($toMySQLConn));
-}
+$query = "delete from {$dbConfig['dbTo']}.users";
+$result = $toDBHandler->query($query, isTestImport());
 
 
 
-$query = "select * from {$sugar_config['dbFrom']}.members " . (isTestImport() ? "LIMIT 0, 10" : "")."";
+$query = "select * from members";
 
-$result = mysqli_query($fromMySQLConn,$query);
+if(isTestImport()) $query = $fromDBHandler->getLimitedQuery($query);
 
-if($result === false) {
-$GLOBALS['log']->fatal(mysqli_error($fromMySQLConn));
-}
+$result = $fromDBHandler->query($query, isTestImport());
 
-while ($row = mysqli_fetch_array($result)) {
+while ($row = $fromDBHandler->fetchRow($result)) {
 
-$row = array_my_escape_string($row,$toMySQLConn);
+$row = $toDBHandler->arrayQuote($row);
 
 array_walk_recursive($row, 'process_items');
 
@@ -43,26 +35,22 @@ $full_name = isNullOrEmptyString($row['full_name']) ? "NULL" : "'{$row['full_nam
 $login_id = isNullOrEmptyString($row['login_id']) ? "NULL" : "'{$row['login_id']}'";
 
 
-$q="insert into {$sugar_config['dbTo']}.users  " . 
+$q="insert into {$dbConfig['dbTo']}.users  " . 
 "( " . 
-"`last_name`, `user_name`" . 
+"`id`, `last_name`, `user_name`" . 
 ") " . 
 "values " . 
 "(" . 
-"{$full_name}, {$login_id}" . 
+"UUID(), {$full_name}, {$login_id}" . 
 ")";
-$res = mysqli_query($toMySQLConn,$q);
-
-if($res === false) {
-$GLOBALS['log']->fatal(mysqli_error($toMySQLConn));
-}
+$res = $toDBHandler->query($q, isTestImport());
 
 
 
 }
 
-mysqli_close($fromMySQLConn);
+$fromDBHandler->disconnect();
 
-mysqli_close($toMySQLConn);
+$toDBHandler->disconnect();
 
-$GLOBALS['log']->fatal('End import members');
+$logger->fatal('End import members');

@@ -9,6 +9,9 @@
 	<url>http://maven.apache.org</url>
 	
 	<repositories>
+	
+	
+	
     <repository>
         <id>swt-repo</id>
         <url>https://raw.githubusercontent.com/maven-eclipse/swt-repo/master/</url>
@@ -16,6 +19,14 @@
 </repositories>
 
 	<dependencies>
+	
+	
+	<dependency>
+  <groupId>org.antlr</groupId>
+  <artifactId>ST4</artifactId>
+  <version>4.1</version>
+  <scope>compile</scope>
+</dependency>
 	
 		<dependency>
         <groupId>org.eclipse.swt</groupId>

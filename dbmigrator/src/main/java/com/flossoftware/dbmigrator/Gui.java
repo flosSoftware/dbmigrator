@@ -1,5 +1,6 @@
 package com.flossoftware.dbmigrator;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -16,6 +17,7 @@ import jxl.write.WriteException;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -43,20 +45,7 @@ public class Gui {
 		
 		// delete map/ contents
 		
-		Path directory = Paths.get("map");
-		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
-		   @Override
-		   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-		       Files.delete(file);
-		       return FileVisitResult.CONTINUE;
-		   }
-
-		   @Override
-		   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-		       Files.delete(dir);
-		       return FileVisitResult.CONTINUE;
-		   }
-		});
+		FileUtils.deleteDirectory(new File("map"));
 
 
 		try {

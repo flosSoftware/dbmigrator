@@ -89,17 +89,13 @@ $full_name = isNullOrEmptyString($row['full_name']) ? "NULL" : "'{$row['full_nam
 $login_id = isNullOrEmptyString($row['login_id']) ? "NULL" : "'{$row['login_id']}'";
 
 
-$q="insert into {$sugar_config['dbTo']}.users  " . 
+$q="insert into {$dbConfig['dbTo']}.users  " . 
 "( " . 
-"`last_name`, `user_name`" . 
+"`id`, `last_name`, `user_name`" . 
 ") " . 
 "values " . 
 "(" . 
-"{$full_name}, {$login_id}" . 
+"UUID(), {$full_name}, {$login_id}" . 
 ")";
-$res = mysqli_query($toMySQLConn,$q);
-
-if($res === false) {
-$GLOBALS['log']->fatal(mysqli_error($toMySQLConn));
-}
+$res = $toDBHandler->query($q, isTestImport());
 
