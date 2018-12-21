@@ -162,7 +162,7 @@ public class DBMetadata {
 			return cols;
 
 		} catch (Exception e) {
-			System.out.println("!!!" + e);
+			System.out.println(e);
 		} finally {
 			if (result != null)
 				result.close();

@@ -99,7 +99,7 @@ class CustomStringList<T> extends ArrayList<T> {
 
 public class DBMigrator {
 
-	public static void doTheJob()
+	public static void doTheJob(DBMetadata dbMeta, DBMetadata dbMeta2)
 			throws ConfigurationException, IOException, ClassNotFoundException, SQLException, WriteException {
 
 		File f = new File("report");
@@ -134,8 +134,8 @@ public class DBMigrator {
 		PropertiesConfiguration prop2 = new PropertiesConfiguration();
 		prop2.load("config/to-db.properties");
 
-		DBMetadata dbMeta = new DBMetadata(prop1);
-		DBMetadata dbMeta2 = new DBMetadata(prop2);
+//		DBMetadata dbMeta = new DBMetadata(prop1);
+//		DBMetadata dbMeta2 = new DBMetadata(prop2);
 
 		String serverType = getServerType(dbMeta);
 		String serverType2 = getServerType(dbMeta);
@@ -213,12 +213,12 @@ public class DBMigrator {
 			if (dbMeta2.getTableSize(string) > 0 && tables1.contains(string)) {
 
 				System.out.println("table " + string + " will be analyzed...");
-				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap);
+				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap, dbMeta, dbMeta2);
 
 				batchScript += "require('" + "import/import_" + tables1.getCorresponding(string) + ".php');\n";
 			} else if (dbMeta2.getTableSize(string) == 0 && tables1.contains(string)) {
 				System.out.println("table " + string + " is empty");
-				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap);
+				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap, dbMeta, dbMeta2);
 
 				batchScript += "require('" + "import/import_" + tables1.getCorresponding(string) + ".php');\n";
 			} else {
@@ -437,7 +437,7 @@ public class DBMigrator {
 
 	private static void analyzeTable(WritableWorkbook workbook, String table1, String table2,
 			PropertiesConfiguration prop1, PropertiesConfiguration prop2, Map<String, String> map,
-			Map<String, String> invMap)
+			Map<String, String> invMap, DBMetadata dbMeta1, DBMetadata dbMeta2)
 			throws IOException, ClassNotFoundException, SQLException, RowsExceededException, WriteException {
 
 		System.out.println("analyzing table " + table1 + " - " + table2);
@@ -450,7 +450,7 @@ public class DBMigrator {
 		CustomStringList<String> arr1 = new CustomStringList<String>(map);
 		CustomStringList<String> arr2 = new CustomStringList<String>(invMap);
 
-		DBMetadata dbMeta1 = new DBMetadata(prop1);
+//		DBMetadata dbMeta1 = new DBMetadata(prop1);
 
 		for (String line : dbMeta1.getColumnsForTable(table1)) {
 
@@ -459,7 +459,7 @@ public class DBMigrator {
 			bw1.write(str);
 		}
 
-		DBMetadata dbMeta2 = new DBMetadata(prop2);
+//		DBMetadata dbMeta2 = new DBMetadata(prop2);
 
 		boolean addDBName = true;
 

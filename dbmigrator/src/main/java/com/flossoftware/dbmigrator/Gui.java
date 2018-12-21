@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.TableItem;
 public class Gui {
 
 	public List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
-	public boolean hasConnected = false;
 	private DBMetadata d1;
 	private DBMetadata d2;
 
@@ -218,21 +217,31 @@ public class Gui {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					try {
-						gui.getD1().getConnection2().close();
-						gui.getD2().getConnection2().close();
+						if (gui.getD1() != null && gui.getD1().getConnection2() != null) 							
+							gui.getD1().getConnection2().close();
+						if (gui.getD2() != null && gui.getD2().getConnection2() != null) 							
+							gui.getD2().getConnection2().close();
+						
+						gui.setD1(composite.dbConnect(false));
+						gui.setD2(composite2.dbConnect(false));
+						
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					gui.setD1(composite.dbConnect(false));
-					gui.setD2(composite2.dbConnect(false));
-					gui.hasConnected = true;
+					
 				}
 			});
 
 			mntmAdd.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
+					
+					if(gui.getD1() == null)
+						gui.setD1(composite.dbConnect(true));
+					
+					if (gui.getD2() == null) 							
+						gui.setD2(composite2.dbConnect(true));
 
 					FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
 							composite, composite2, gui.fieldsGuiList, gui);
@@ -242,18 +251,10 @@ public class Gui {
 
 					//fieldsGuiList.add(composite3);
 					shell.pack();
-
-					if (gui.hasConnected) {
-						try {
-							gui.getD1().getConnection2().close();
-							gui.getD2().getConnection2().close();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						gui.setD1(composite.dbConnect(true));
-						gui.setD2(composite2.dbConnect(true));
-					}
+					shell.redraw();
+					
+					
+					
 				}
 
 			});
@@ -265,7 +266,7 @@ public class Gui {
 
 						gui.saveProps(composite, composite2);
 
-						DBMigrator.doTheJob();
+						DBMigrator.doTheJob(gui.d1,gui.d2);
 
 					} catch (ConfigurationException | ClassNotFoundException
 							| WriteException | IOException | SQLException e) {
@@ -295,7 +296,7 @@ public class Gui {
 
 	public void setD1(DBMetadata d1) {
 		this.d1 = d1;
-		System.out.println("setting to ..." + d1);
+//		System.out.println("setting to ..." + d1);
 	}
 
 	public DBMetadata getD2() {

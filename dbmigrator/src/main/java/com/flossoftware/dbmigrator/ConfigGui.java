@@ -24,18 +24,18 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 
 public class ConfigGui extends Composite {
-	final public Text textDB;
-	final public Text textIP;
-	final public Text textPort;
-	final public Text textUser;
-	final public Text textPw;
-	final public Text textConn;
-	final public Text textConn2;
-	final public Combo comboDriver;
-	final public Combo comboOverride;
-	final public Button btnNuID;
-	final public boolean isToConfig;
-	final public AbstractFileConfiguration configProp;
+	public Text textDB;
+	public Text textIP;
+	public Text textPort;
+	public Text textUser;
+	public Text textPw;
+	public Text textConn;
+	public Text textConn2;
+	public Combo comboDriver;
+	public Combo comboOverride;
+	public Button btnNuID;
+	public boolean isToConfig;
+	public AbstractFileConfiguration configProp;
 	private Gui gui;
 
 	/**
@@ -45,7 +45,7 @@ public class ConfigGui extends Composite {
 	 * @param style
 	 * @throws ConfigurationException
 	 */
-	public ConfigGui(Composite parent, int style, String pPath, final boolean aIsToConfig, Gui gui)
+	public ConfigGui(Composite parent, int style, String pPath, boolean aIsToConfig, Gui gui)
 			throws ConfigurationException {
 		super(parent, style);
 
