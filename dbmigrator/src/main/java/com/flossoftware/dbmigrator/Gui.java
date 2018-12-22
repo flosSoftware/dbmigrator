@@ -22,9 +22,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -200,7 +202,22 @@ public class Gui {
 			sc.setExpandHorizontal(true);
 			sc.setExpandVertical(true);
 			sc.setMinSize(c.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+			if(gui.fieldsGuiList.size() == 0) {
+
+				FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
+						composite, composite2, gui.fieldsGuiList, gui);
+				composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
+						false, false, 2, 1));
+				//composite3.size(shell.getBounds());
+				gui.fieldsGuiList.add(composite3);
+			}
 			
+			((Button)gui.fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
+
+			shell.pack();
+			shell.redraw();
+
 			
 
 			for (FieldsGui fGui : gui.fieldsGuiList) {
@@ -208,6 +225,8 @@ public class Gui {
 			}
 
 			shell.pack();
+			
+			shell.setLocation(0, 0);
 
 			shell.open();
 			
@@ -265,8 +284,9 @@ public class Gui {
 					try {
 
 						gui.saveProps(composite, composite2);
-
-						DBMigrator.doTheJob(gui.d1,gui.d2);
+						
+						if(gui.fieldsGuiList.size() > 0)
+							DBMigrator.doTheJob(gui.d1,gui.d2);
 
 					} catch (ConfigurationException | ClassNotFoundException
 							| WriteException | IOException | SQLException e) {

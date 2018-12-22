@@ -62,26 +62,35 @@ public class FieldsGui extends Composite {
 		final FieldsGui dis = this;
 		
 		
-			Button removeBtn = new Button(this, SWT.NONE);
-			removeBtn.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					//System.out.println("idx " + dis.fieldsGuiListIndex);
-					fieldsGuiList.remove(dis.fieldsGuiListIndex);
-	
-					for (FieldsGui fieldsGui : fieldsGuiList) {
-						if (fieldsGui.fieldsGuiListIndex > fieldsGuiListIndex)
-							fieldsGui.fieldsGuiListIndex--;
-					}
-	
-					dis.dispose();
-	
-					parent.layout(true, true);
+		Button removeBtn = new Button(this, SWT.NONE);
+		removeBtn.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				//System.out.println("idx " + dis.fieldsGuiListIndex);
+				fieldsGuiList.remove(dis.fieldsGuiListIndex);
+
+				for (FieldsGui fieldsGui : fieldsGuiList) {
+					if (fieldsGui.fieldsGuiListIndex > fieldsGuiListIndex)
+						fieldsGui.fieldsGuiListIndex--;
 				}
-			});
-			removeBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
-			removeBtn.setText("Remove Mapping");
-		
+
+				dis.dispose();
+				
+				//System.out.println(((Button)fieldsGuiList.get(0).getData("rmBtn")));
+//				if (fieldsGuiList.size() == 1) {
+//					
+//					((Button)fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
+//				} else {
+//					((Button)fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
+//				}
+
+				shell.layout(true, true);
+				shell.redraw();
+			}
+		});
+		removeBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+		removeBtn.setText("Remove Mapping");
+		this.setData("rmBtn", removeBtn);
 
 		tableTbl = new Table(this, SWT.BORDER | SWT.V_SCROLL);
 		tableTbl.setHeaderVisible(true);

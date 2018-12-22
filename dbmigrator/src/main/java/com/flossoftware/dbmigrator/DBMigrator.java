@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.mihalis.opal.notify.Notifier;
 import org.stringtemplate.v4.ST;
 
 import jxl.Workbook;
@@ -101,7 +102,8 @@ public class DBMigrator {
 
 	public static void doTheJob(DBMetadata dbMeta, DBMetadata dbMeta2)
 			throws ConfigurationException, IOException, ClassNotFoundException, SQLException, WriteException {
-
+		String messageHtml = "";
+		
 		File f = new File("report");
 		if (f.exists()) {
 			FileUtils.deleteDirectory(f);
@@ -134,8 +136,6 @@ public class DBMigrator {
 		PropertiesConfiguration prop2 = new PropertiesConfiguration();
 		prop2.load("config/to-db.properties");
 
-//		DBMetadata dbMeta = new DBMetadata(prop1);
-//		DBMetadata dbMeta2 = new DBMetadata(prop2);
 
 		String serverType = getServerType(dbMeta);
 		String serverType2 = getServerType(dbMeta);
@@ -219,7 +219,7 @@ public class DBMigrator {
 			} else if (dbMeta2.getTableSize(string) == 0 && tables1.contains(string)) {
 				System.out.println("table " + string + " is empty");
 				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap, dbMeta, dbMeta2);
-
+				messageHtml = "import/import_" + tables1.getCorresponding(string);
 				batchScript += "require('" + "import/import_" + tables1.getCorresponding(string) + ".php');\n";
 			} else {
 				System.out.println("table " + string + " not present on the other db");
@@ -234,6 +234,8 @@ public class DBMigrator {
 
 		workbook.write();
 		workbook.close();
+		
+		Notifier.notify("Script creation completed", "The program has created the following scripts:<br/><br/>"+messageHtml); 
 	}
 
 	private static String getServerType(DBMetadata dbMeta) throws SQLException {
@@ -450,8 +452,6 @@ public class DBMigrator {
 		CustomStringList<String> arr1 = new CustomStringList<String>(map);
 		CustomStringList<String> arr2 = new CustomStringList<String>(invMap);
 
-//		DBMetadata dbMeta1 = new DBMetadata(prop1);
-
 		for (String line : dbMeta1.getColumnsForTable(table1)) {
 
 			String str = line + "\n";
@@ -459,7 +459,6 @@ public class DBMigrator {
 			bw1.write(str);
 		}
 
-//		DBMetadata dbMeta2 = new DBMetadata(prop2);
 
 		boolean addDBName = true;
 
