@@ -138,7 +138,7 @@ public class DBMigrator {
 
 
 		String serverType = getServerType(dbMeta);
-		String serverType2 = getServerType(dbMeta);
+		String serverType2 = getServerType(dbMeta2);
 
 		File tableMapF = new File("tableMap.properties");
 		PropertiesConfiguration tableMapP = null;
@@ -169,9 +169,11 @@ public class DBMigrator {
 		ST batchScriptTpl = new ST(batchScript, '#', '#');
 		batchScriptTpl.add("ipFrom", prop1.getString("ip"));
 		batchScriptTpl.add("ipTo", prop2.getString("ip"));
+		batchScriptTpl.add("portFrom", prop1.getString("port"));
+		batchScriptTpl.add("portTo", prop2.getString("port"));
 		batchScriptTpl.add("dbFrom", prop1.getString("database"));
 		batchScriptTpl.add("dbTo", prop2.getString("database"));
-		batchScriptTpl.add("usrFrom", prop2.getString("user"));
+		batchScriptTpl.add("usrFrom", prop1.getString("user"));
 		batchScriptTpl.add("usrTo", prop2.getString("user"));
 		batchScriptTpl.add("pwFrom", prop1.getString("password"));
 		batchScriptTpl.add("pwTo", prop2.getString("password"));
@@ -284,8 +286,11 @@ public class DBMigrator {
 
 		} else {
 
-			ret = result + " = " + conn + "->query(" + query + ", isTestImport());\n\n";
-
+			ret = result + " = " + conn + "->query(" + query + ");\n\n";
+			ret = ret + "if(!"+result+") {\n" + 
+					"	$logger->log(\"Query error for: \" . $q);\n" + 
+					"	$logger->log(\"Error description: \" . " + conn + "->getLastError());\n" + 
+					"}\n\n";
 		}
 
 		return ret;
@@ -299,14 +304,25 @@ public class DBMigrator {
 
 		String preambleStmt = "", connStmt = "", fetchStmt = "", closeStmt = "", quoteStmt = "";
 
-		connStmt = connStmt(serverConn(false)) + "\n\n" + connStmt(serverConn(true)) + "\n\n";
+		connStmt = connStmt(serverConn(false),false) + "\n\n" + connStmt(serverConn(true),true) + "\n\n";
 
 		if (toServer.equals("sqlsrv")) {
 
 			preambleStmt += queryStmt("", serverConn(true), "\"SET DATEFORMAT ymd\"", "$result", false);
 		}
+		
+		String table1Sel = table1;
+		
+		if (fromServer.equals("mysql")) {
 
-		fetchStmt = "$query = \"select * from " + table1 + whereDel + "\";\n\n" +
+			table1Sel = "{$dbConfig['dbFrom']}." + table1Sel;
+			
+		} else if (fromServer.equals("sqlsrv")) {
+
+			table1Sel = "[{$dbConfig['dbFrom']}].[dbo]." + table1Sel;
+		}
+
+		fetchStmt = "$query = \"select * from " + table1Sel + whereDel + "\";\n\n" +
 
 				"if(isTestImport()) $query = " + serverConn(false) + "->getLimitedQuery($query);\n\n" +
 
@@ -323,10 +339,12 @@ public class DBMigrator {
 		quoteStmt = arrayQuoteStmt("", "$row", serverConn(true));
 
 		String result = "<?php\n\n" +
+		
+				"require_once 'utils.php';\n\n" +
 
-				"global $logger;\n" + "global " + serverConn(true) + ";\n" + "global " + serverConn(false) + ";\n\n"
+				"global $dbConfig;\nglobal $logger;\n" + "global " + serverConn(true) + ";\n" + "global " + serverConn(false) + ";\n\n"
 
-				+ "$logger->fatal('Start import " + table1 + "');\n\n"
+				+ "$logger->log('Start import " + table1 + "');\n\n"
 
 				+ connStmt + "\n\n"
 
@@ -338,7 +356,7 @@ public class DBMigrator {
 
 				quoteStmt +
 
-				"array_walk_recursive($row, 'process_items');\n\n" +
+				"array_walk_recursive($row, 'processItems');\n\n" +
 
 				insertStmts + "\n\n" +
 
@@ -346,7 +364,7 @@ public class DBMigrator {
 
 				closeStmt +
 
-				"$logger->fatal('End import " + table1 + "');";
+				"$logger->log('End import " + table1 + "');";
 
 		BufferedWriter bw = new BufferedWriter(new FileWriter("script/import/" + "import_" + table1 + ".php"));
 
@@ -355,8 +373,11 @@ public class DBMigrator {
 		bw.close();
 	}
 
-	private static String connStmt(String conn) {
-		return conn + "->connect($dbConfig['ipFrom'], $dbConfig['usrFrom'], $dbConfig['pwFrom'], $dbConfig['dbFrom']);";
+	private static String connStmt(String conn, boolean isTo) {
+		if(isTo)
+			return conn + "->connect($dbConfig['ipTo'], $dbConfig['portTo'], $dbConfig['usrTo'], $dbConfig['pwTo'], $dbConfig['dbTo']);";
+		else
+			return conn + "->connect($dbConfig['ipFrom'], $dbConfig['portFrom'], $dbConfig['usrFrom'], $dbConfig['pwFrom'], $dbConfig['dbFrom']);";
 	}
 
 	private static String closeStmt(String conn) {
@@ -873,7 +894,8 @@ public class DBMigrator {
 
 		}
 
-		String delTableId = addDBName ? "{$dbConfig['dbTo']}." + table2 : "" + table2;
+		String delTableId = addDBName ? "{$dbConfig['dbTo']}." + 
+		table2 : "" + table2;
 
 		if (isSqlServer2) {
 			delTableId = addDBName ? (delimiterOp + "{$dbConfig['dbTo']}" + delimiterCl + ".[dbo].") + table2
@@ -965,7 +987,7 @@ public class DBMigrator {
 
 			String scriptTeam =
 
-					"\n$id = create_guid(); \n" +
+					"\n$id = createGuid(); \n" +
 
 							"$q=\"insert into "
 
@@ -1325,7 +1347,7 @@ public class DBMigrator {
 
 			String scriptTeam =
 
-					"\n$id = create_guid(); \n" +
+					"\n$id = createGuid(); \n" +
 
 							"$q=\"insert into " + prop1.getString("database") + "."
 

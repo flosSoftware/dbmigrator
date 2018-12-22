@@ -1,18 +1,18 @@
 <?php
-
+require_once('database/DBHandler.php');
 class MysqliHandler extends DBHandler
 {
     public function getLimitedQuery($q)
     {
-        if(starts_with(strtolower($q),"select "))
+        if(startsWith(strtolower($q),"select "))
             $q = $q . " LIMIT 0,10";
         return $q;
     }
     
-    public function query($q, $isTest)
+    public function query($q)
     {   
         $this->lastResult = mysqli_query($this->connection,$q);
-        return $this->lastResult        
+        return $this->lastResult;        
     }
 
     public function getRowCount($result)

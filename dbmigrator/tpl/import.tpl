@@ -6,9 +6,12 @@ ini_set('default_charset', 'utf-8');
 require_once 'utils.php';
 require_once 'FlosLogger.php';
 
-global $dbConfig = array(
+global $dbConfig;
+$dbConfig = array(
     'ipFrom' => '#ipFrom#',
     'ipTo' => '#ipTo#',
+	'portFrom' => '#portFrom#',
+    'portTo' => '#portTo#',
     'dbFrom' => '#dbFrom#',
     'dbTo' => '#dbTo#',
     'usrFrom' => '#usrFrom#',
@@ -17,6 +20,9 @@ global $dbConfig = array(
     'pwTo' => '#pwTo#'
 );
 
-global $logger = new FlosLogger('import.log');
-global #dbToHandlerName# = getTypeInstance("#dbToType#");
-global #dbFromHandlerName# = getTypeInstance("#dbFromType#");
+global $logger;
+$logger = new FlosLogger('import.log');
+global #dbToHandlerName#;
+#dbToHandlerName# = getTypeInstance("#dbToType#");
+global #dbFromHandlerName#;
+#dbFromHandlerName# = getTypeInstance("#dbFromType#");

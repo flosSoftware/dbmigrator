@@ -32,7 +32,7 @@ public class ConfigGui extends Composite {
 	public Text textConn;
 	public Text textConn2;
 	public Combo comboDriver;
-	public Combo comboOverride;
+//	public Combo comboOverride;
 	public Button btnNuID;
 	public boolean isToConfig;
 	public AbstractFileConfiguration configProp;
@@ -152,7 +152,7 @@ public class ConfigGui extends Composite {
 
 		textConn = new Text(this, SWT.BORDER);
 		textConn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-
+/*
 		Label lblOverride = new Label(this, SWT.NONE);
 		lblOverride.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblOverride.setText("Destination Platform");
@@ -167,7 +167,7 @@ public class ConfigGui extends Composite {
 			lblOverride.setVisible(false);
 			comboOverride.setVisible(false);
 		}
-
+*/
 		Label lblNuID = new Label(this, SWT.NONE);
 		lblNuID.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblNuID.setText("New ID");
@@ -178,8 +178,8 @@ public class ConfigGui extends Composite {
 		}
 
 		comboDriver.select(s1.indexOf(configProp.getString("driver")));
-		if (isToConfig)
-			comboOverride.select(s3.indexOf(configProp.getString("server_type_override")));
+//		if (isToConfig)
+//			comboOverride.select(s3.indexOf(configProp.getString("server_type_override")));
 		textDB.setText(configProp.getString("database"));
 		textIP.setText(configProp.getString("ip"));
 		textPw.setText(configProp.getString("password"));
@@ -203,8 +203,8 @@ public class ConfigGui extends Composite {
 
 		if (comboDriver.getSelectionIndex() > -1)
 			h.put("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
-		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-			h.put("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
+//		if (isToConfig && comboOverride.getSelectionIndex() > -1)
+//			h.put("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		h.put("database", textDB.getText());
 		h.put("ip", textIP.getText());
 		h.put("password", textPw.getText());
@@ -252,8 +252,8 @@ public class ConfigGui extends Composite {
 
 		if (comboDriver.getSelectionIndex() > -1)
 			configProp.setProperty("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
-		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-			configProp.setProperty("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
+//		if (isToConfig && comboOverride.getSelectionIndex() > -1)
+//			configProp.setProperty("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		configProp.setProperty("database", textDB.getText());
 		configProp.setProperty("ip", textIP.getText());
 		configProp.setProperty("password", textPw.getText());

@@ -1,0 +1,38 @@
+email
+passwd
+login_id
+full_name
+
+[fields to insert] 
+[email], [full_name], [login_id], [passwd], 
+[values to insert] 
+{$email}, {$full_name}, {$login_id}, {$passwd}, 
+[commands for not nullable fields] 
+$email = isNullOrEmptyString($row['email']) ? "''" : "'{$row['email']}'";
+$full_name = isNullOrEmptyString($row['full_name']) ? "''" : "'{$row['full_name']}'";
+$login_id = isNullOrEmptyString($row['login_id']) ? "''" : "'{$row['login_id']}'";
+$passwd = isNullOrEmptyString($row['passwd']) ? "''" : "'{$row['passwd']}'";
+[script] 
+
+
+$email = isNullOrEmptyString($row['email']) ? "''" : "'{$row['email']}'";
+$full_name = isNullOrEmptyString($row['full_name']) ? "''" : "'{$row['full_name']}'";
+$login_id = isNullOrEmptyString($row['login_id']) ? "''" : "'{$row['login_id']}'";
+$passwd = isNullOrEmptyString($row['passwd']) ? "''" : "'{$row['passwd']}'";
+
+
+$q="insert into [{$dbConfig['dbTo']}].[dbo].members  " . 
+"( " . 
+"[id], [email], [full_name], [login_id], [passwd]" . 
+") " . 
+"values " . 
+"(" . 
+"NEWID(), {$email}, {$full_name}, {$login_id}, {$passwd}" . 
+")";
+$res = $toDBHandler->query($q);
+
+if(!$res) {
+	$logger->log("Query error for: " . $q);
+	$logger->log("Error description: " . $toDBHandler->getLastError());
+}
+

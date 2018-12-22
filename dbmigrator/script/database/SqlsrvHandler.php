@@ -1,19 +1,21 @@
 <?php
 
+require_once('database/DBHandler.php');
+
 class SqlsrvHandler extends DBHandler
 {
 
     public function getLimitedQuery($q) 
     {
-        if(starts_with(strtolower($q),"select ") && $isTest)
-            $q = str_ireplace("select ", "select TOP 10 ", $q, 1);
+        if(startsWith(strtolower($q),"select ") && $isTest)
+            $q = str_ireplace("select ", "select TOP 10 ", $q);
         return $q;
     }
     
     public function query($q)
     {
         $this->lastResult = sqlsrv_query($this->connection, $q);
-        return $this->lastResult
+        return $this->lastResult;
     }
 
     public function getRowCount($result)
@@ -24,7 +26,7 @@ class SqlsrvHandler extends DBHandler
     public function freeDbResult($dbResult)
     {
         if (! empty($dbResult))
-            sqlsrv_free_result($dbResult);
+            sqlsrv_free_stmt($dbResult);
     }
 
     public function freeLastResult()
@@ -100,6 +102,13 @@ class SqlsrvHandler extends DBHandler
 
     public function getLastError()
     {
-        return sqlsrv_errors($this->connection);
+        $ret = "";
+		if( ($errors = sqlsrv_errors() ) != null) 
+			foreach( $errors as $error ) {
+				$ret .= "SQLSTATE: ".$error[ 'SQLSTATE']." ";
+				$ret .= "code: ".$error[ 'code']." ";
+				$ret .= "message: ".$error[ 'message']." ";
+			}		
+		return $ret;
     }
 }
