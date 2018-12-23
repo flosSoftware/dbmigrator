@@ -18,61 +18,6 @@ function getTypeInstance($type)
 }
 
 
-function executeInsertWithLob($db, $clobData, $blobData, $sql)
-{
-    $db->checkConnection();
-    if (empty($sql)) {
-        return false;
-    }
-    $lob_fields = array();
-    $lob_field_type = array();
-    $lobs = array();
-    foreach ($clobData as $field => $value) {
-        $lob_type = OCI_B_CLOB;
-        $lob_fields[$field] = ":" . $field;
-        $lob_field_type[$field] = $lob_type;
-    }
-    foreach ($blobData as $field => $value) {
-        $lob_type = OCI_B_BLOB;
-        $lob_fields[$field] = ":" . $field;
-        $lob_field_type[$field] = $lob_type;
-    }
-    if (count($lob_fields) > 0) {
-        $sql .= " RETURNING " . implode(",", array_keys($lob_fields)) . ' INTO ' . implode(",", array_values($lob_fields));
-    }
-    $GLOBALS['log']->info("Oracle Execute: $sql");
-    $stmt = oci_parse($db->database, $sql);
-    if ($db->checkError("Update parse failed: $sql", false)) {
-        return false;
-    }
-    foreach ($lob_fields as $key => $descriptor) {
-        $newlob = oci_new_descriptor($db->database, OCI_D_LOB);
-        oci_bind_by_name($stmt, $descriptor, $newlob, - 1, $lob_field_type[$key]);
-        $lobs[$key] = $newlob;
-    }
-    $result = false;
-    oci_execute($stmt, OCI_DEFAULT);
-    if (! $db->checkError("Update execute failed: $sql", false, $stmt) && oci_num_rows($stmt)) {
-        foreach ($lobs as $key => $lob) {
-            if (isset($clobData[$key])) {
-                $val = from_html($clobData[$key]);
-            } elseif (isset($blobData[$key])) {
-                $val = from_html($blobData[$key]);
-            } else {
-                $val = null;
-            }
-            $lob->save($val);
-        }
-        oci_commit($db->database);
-        $result = true;
-    }
-    foreach ($lobs as $lob) {
-        $lob->free();
-    }
-    oci_free_statement($stmt);
-    return $result;
-}
-
 function isNullOrEmptyString($string)
 {
     return (! isset($string) || trim($string) === '');

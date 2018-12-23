@@ -7,7 +7,7 @@ class SqlsrvHandler extends DBHandler
 
     public function getLimitedQuery($q) 
     {
-        if(startsWith(strtolower($q),"select ") && $isTest)
+        if(startsWith(strtolower($q),"select "))
             $q = str_ireplace("select ", "select TOP 10 ", $q);
         return $q;
     }
