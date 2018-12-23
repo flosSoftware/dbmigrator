@@ -393,7 +393,7 @@ public class DBMigrator {
 
 	private static void generateXLS(String table1, String table2, String header1, String header2,
 			WritableWorkbook workbook, List<String> missingFields1, List<String> missingFields2, DBMetadata dbMeta1,
-			DBMetadata dbMeta2) throws RowsExceededException, WriteException, IOException {
+			DBMetadata dbMeta2) throws RowsExceededException, WriteException, IOException, SQLException {
 
 		WritableFont headerFont = new WritableFont(WritableFont.ARIAL, 12, WritableFont.BOLD, true);
 		WritableCellFormat headerFormat = new WritableCellFormat(headerFont);
@@ -439,7 +439,7 @@ public class DBMigrator {
 		sheet.addCell(new Label(col, row, "Fields missing in " + header2 + "." + table2, headerFormat));
 		row++;
 
-		String alter = "ALTER TABLE " + table2 + " ADD (";
+		String alter = "ALTER TABLE " + table2 + " ADD " + (dbMeta2.isSQLServer() ? "" : "(");
 
 		for (String string : missingFields2) {
 
@@ -454,8 +454,10 @@ public class DBMigrator {
 			sheet.addCell(new Label(col, row, string));
 			row++;
 		}
+		
+		alter = alter.substring(0, alter.length()-2);
 
-		alter += ");";
+		alter += (dbMeta2.isSQLServer() ? "" : ")") + ";";
 
 		sheet.addCell(new Label(0, row, "ALTER Statement", headerFormat));
 

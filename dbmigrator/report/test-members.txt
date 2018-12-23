@@ -1,7 +1,7 @@
-email
-passwd
-login_id
 full_name
+email
+login_id
+passwd
 
 [fields to insert] 
 [email], [full_name], [login_id], [passwd], 

@@ -194,10 +194,12 @@ public class DBMetadata {
 			while (result.next()) {
 				String columnName = result.getString(4);
 				if (columnName.equalsIgnoreCase(colName)) {
+					//System.out.println(result);
+					String isNullableStmt = getIsNullableSqlStmt(result.getInt(11));
 					desc += colName + " " + getSqlTypeName(result.getInt(5))
 							+ "(" + result.getInt(7) + ") "
-							+ getIsNullableSqlStmt(result.getInt(11))
-							+ " DEFAULT " + result.getString(13);
+							+ isNullableStmt
+							+ (result.getObject(13) == null && isNullableStmt == "NOT NULL" ? " DEFAULT ''" : " DEFAULT " + result.getString(13));
 
 					return desc;
 				}
