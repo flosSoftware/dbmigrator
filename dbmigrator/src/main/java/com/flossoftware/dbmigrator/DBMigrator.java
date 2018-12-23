@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +19,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.mihalis.opal.notify.Notifier;
 import org.stringtemplate.v4.ST;
 
@@ -228,7 +232,9 @@ public class DBMigrator {
 			}
 		}
 
-		BufferedWriter bw = new BufferedWriter(new FileWriter("script/import.php"));
+		BufferedWriter bw = 
+				//new BufferedWriter(new FileWriterWithEncoding("script/import.php","utf-8"));
+				Files.newBufferedWriter(Paths.get("script/import.php"),Charset.forName("UTF-8"));
 
 		bw.write(batchScript);
 
@@ -366,8 +372,9 @@ public class DBMigrator {
 
 				"$logger->log('End import " + table1 + "');";
 
-		BufferedWriter bw = new BufferedWriter(new FileWriter("script/import/" + "import_" + table1 + ".php"));
-
+		BufferedWriter bw = 
+				//new BufferedWriter(new FileWriterWithEncoding("script/import/" + "import_" + table1 + ".php","utf-8"));
+				Files.newBufferedWriter(Paths.get("script/import/" + "import_" + table1 + ".php"),Charset.forName("UTF-8"));
 		bw.write(result);
 
 		bw.close();

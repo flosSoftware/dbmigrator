@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,12 +46,14 @@ public class FieldsGui extends Composite {
 	public TableColumn tableTblCol2;
 
 	private Gui gui;
+	private ScrolledComposite sc;
+	private Composite parent;
 
 
 	private int fieldsGuiListIndex;
 
-	public FieldsGui(final Composite parent, final Shell shell, int style, ConfigGui configGuiFrom,
-			ConfigGui configGuiTo, final List<FieldsGui> fieldsGuiList, Gui gui
+	public FieldsGui(final Composite parent, final ScrolledComposite sc, final Shell shell, int style, ConfigGui configGuiFrom,
+			ConfigGui configGuiTo, final List<FieldsGui> fieldsGuiList, final Gui gui
 	) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
@@ -58,6 +61,10 @@ public class FieldsGui extends Composite {
 		this.gui = gui;
 
 		this.shell = shell;
+		
+		this.parent = parent;
+		
+		this.sc = sc;
 
 		final FieldsGui dis = this;
 		
@@ -76,13 +83,9 @@ public class FieldsGui extends Composite {
 
 				dis.dispose();
 				
-				//System.out.println(((Button)fieldsGuiList.get(0).getData("rmBtn")));
-//				if (fieldsGuiList.size() == 1) {
-//					
-//					((Button)fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
-//				} else {
-//					((Button)fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
-//				}
+				sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+				((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
 
 				shell.layout(true, true);
 				shell.redraw();
@@ -207,6 +210,9 @@ public class FieldsGui extends Composite {
 								((Button)item.getData("btn")).setData(i);
 							}
 							
+							sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+							((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
 							
 							//fieldTbl.redraw();
 							shell.layout(true, true);
@@ -226,16 +232,20 @@ public class FieldsGui extends Composite {
 							fieldTbl.getSize().y + tableItem.getBounds().height + fieldTbl.getBorderWidth());
 					//fieldTbl.redraw();
 					
+					sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+					((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-					int oldWidth = shell.getSize().x;
+					
+
+//					int oldWidth = shell.getSize().x;
 
 					shell.layout(true, true);					
 					shell.redraw();
 
-					final Point newSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-					newSize.x = oldWidth;
+//					final Point newSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+//					newSize.x = oldWidth;
 
-					shell.setSize(newSize);
+					//shell.setSize(newSize);
 					
 
 				} catch (SQLException e1) {

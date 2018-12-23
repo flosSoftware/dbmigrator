@@ -107,7 +107,8 @@ public class Gui {
 	 */
 	public static void main(String[] args) throws ClassNotFoundException,
 			SQLException, ConfigurationException {
-		/*	DBMetadata dbMeta = new DBMetadata(new PropertiesConfiguration(
+		/*	
+		DBMetadata dbMeta = new DBMetadata(new PropertiesConfiguration(
 				"config/from-db.properties"));
 
 		List<String> l1 = dbMeta.getTables();
@@ -115,7 +116,7 @@ public class Gui {
 		for (String string : l1) {
 			System.out.println(string);
 		}
-*/
+		*/
 		try {
 			
 			final Gui gui = new Gui();
@@ -130,8 +131,9 @@ public class Gui {
 					"config/to-db.properties")));
 
 			Display display = new Display();
-			final Shell shell = new Shell(display, SWT.SHELL_TRIM
-			// & (~SWT.RESIZE)
+			final Shell shell = new Shell(display
+					//, SWT.SHELL_TRIM
+					// & (~SWT.RESIZE)
 			);
 
 			shell.setLayout(new GridLayout(2, false));
@@ -172,10 +174,10 @@ public class Gui {
 			final Rectangle shellSize = shell.getBounds();
 			
 			final ScrolledComposite sc = new ScrolledComposite(shell,
-					SWT.H_SCROLL | SWT.V_SCROLL);
+//					SWT.H_SCROLL | 
+					SWT.V_SCROLL);
 			
-			sc.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true,
-					false, 2, 1));
+
 
 			final Composite c = new Composite(sc, SWT.NONE);
 			c.setLayout(new GridLayout(1, false));
@@ -189,7 +191,7 @@ public class Gui {
 				p = new PropertiesConfiguration("map/" + tableTo
 						+ ".properties");
 
-				FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
+				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE,
 						composite, composite2, gui.fieldsGuiList, gui);
 				composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 						true, false, 1, 1));
@@ -198,27 +200,34 @@ public class Gui {
 
 			}
 			
+
+			if(gui.fieldsGuiList.size() == 0) {
+
+				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE,
+						composite, composite2, gui.fieldsGuiList, gui);
+				composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
+						false, false, 2, 1));
+				gui.fieldsGuiList.add(composite3);
+				sc.setContent(composite3);
+			}
+			
 			sc.setContent(c);
 			sc.setExpandHorizontal(true);
 			sc.setExpandVertical(true);
 			sc.setMinSize(c.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-			if(gui.fieldsGuiList.size() == 0) {
-
-				FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
-						composite, composite2, gui.fieldsGuiList, gui);
-				composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-						false, false, 2, 1));
-				//composite3.size(shell.getBounds());
-				gui.fieldsGuiList.add(composite3);
-			}
+			
+			GridData gd = new GridData(SWT.FILL, SWT.FILL, true,
+					true
+					, 2, 1
+					);
+		    gd.heightHint = c.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+			
+			sc.setLayoutData(gd);
 			
 			((Button)gui.fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
 
 			shell.pack();
-			shell.redraw();
-
-			
+			//shell.redraw();
 
 			for (FieldsGui fGui : gui.fieldsGuiList) {
 				fGui.size(shellSize);
@@ -229,9 +238,7 @@ public class Gui {
 			shell.setLocation(0, 0);
 
 			shell.open();
-			
-			
-			
+						
 			mntmConnect.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
@@ -262,17 +269,20 @@ public class Gui {
 					if (gui.getD2() == null) 							
 						gui.setD2(composite2.dbConnect(true));
 
-					FieldsGui composite3 = new FieldsGui(c, shell, SWT.NONE,
+					FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE,
 							composite, composite2, gui.fieldsGuiList, gui);
 					composite3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 							false, false, 2, 1));
 					composite3.size(shellSize);
 
 					//fieldsGuiList.add(composite3);
+					
+					sc.setMinHeight(c.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+					((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+
+					
 					shell.pack();
 					shell.redraw();
-					
-					
 					
 				}
 

@@ -2,9 +2,9 @@
 function getTypeInstance($type)
 {
     if ($type == "mysql")
-            $my_db_manager = "MysqliHandler";
+        $my_db_manager = "MysqliHandler";
         elseif ($type == "sqlsrv")
-            $my_db_manager = "SqlsrvHandler";
+        $my_db_manager = "SqlsrvHandler";
         else
             $my_db_manager = "OracleHandler";
             
@@ -78,23 +78,32 @@ function isNullOrEmptyString($string)
     return (! isset($string) || trim($string) === '');
 }
 
+function _convertToUTF8_3($content)
+{
+    return iconv('', 'UTF-8', $content);
+}
+
 function _convertToUTF8_2($content)
 {
-    return iconv('', 'UTF8', $content);
+    $massaged = htmlentities (utf8_encode($content), ENT_QUOTES, "UTF-8");
+    //$unmassaged = utf8_decode(html_entity_decode($massaged, ENT_QUOTES, "UTF-8"));
+    return $massaged;
 }
 
 function _convertToUTF8($content)
 {
-    if (! mb_check_encoding($content, 'UTF-8')) {
-        $content = mb_convert_encoding($content, 'UTF-8', 'auto');
-    }
-    return $content;
+    if (!mb_check_encoding($content, 'UTF-8') ||
+        !($content === mb_convert_encoding(mb_convert_encoding($content, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32'))
+        ) {
+            $content = mb_convert_encoding($content, 'UTF-8');
+        }
+        return $content;
 }
 
 function processItems(&$item, $key)
 {
-    //$item = _convertToUTF8_2($item);
-    // $item = _convertToUTF8($item);
+    $item = _convertToUTF8_3($item);
+    //$item = _convertToUTF8($item);
     $item = trim($item);
 }
 
