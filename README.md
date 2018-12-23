@@ -7,7 +7,7 @@ Generated scripts work require **mysqli** and **sqlsrv** PHP extensions installe
 ## HOW TO USE IT
 Run the class **Gui.java** and then choose the appropriate connection parameters. Then go to *File...->Connect to DB*.
 ![](https://albertof.com/img/dbmigrator/-1.png)
-Choose one table from the source and the destination DB from the dropdown.
+Choose one table from the source and the destination DB using the dropdowns.
 ![](https://albertof.com/img/dbmigrator/0.png)
 Go to *File...->Save and get scripts*. Then open the file **report.xls** inside **dbmigrator** folder.
 ![](https://albertof.com/img/dbmigrator/1.png)
