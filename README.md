@@ -1,9 +1,9 @@
 # dbmigrator
-This is a Java tool for exporting DB tables between different schemas/databases. 
-Offers a GUI to configure the process. 
+This is a Java/PHP tool for exporting DB tables between different schemas/databases. 
+Offers a Java GUI to configure the process. 
 The result is a series of PHP scripts that can be launched to perform data export/import.
-Supports the following DB: mysql, sql server. 
-Generated scripts work require mysqli and sqsrv PHP extensions installed.
+Supports the following DB: **mysql, sql server**. 
+Generated scripts work require **mysqli** and **sqlsrv** PHP extensions installed.
 ## HOW TO USE IT
 Run the class **Gui.java** and then choose the appropriate connection parameters. Then go to *File...->Connect to DB*.
 ![](https://albertof.com/img/dbmigrator/-1.png)
