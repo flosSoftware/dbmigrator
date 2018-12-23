@@ -1,8 +1,22 @@
 # dbmigrator
 This is a Java tool for exporting DB tables between different schemas/databases. 
 Offers a GUI to configure the process. 
-The result is a series of .php scripts that can be launched to perform data export/import.
-Supports the following DB: mysql, oracle, sql server. 
-Generated scripts work inside SugarCRM but can be customized to avoid use of SugarCRM objects/functions.
-## TODO
-I need this program to generate php scripts that use native DB function. ATM they work only in SugarCRM environments.
+The result is a series of PHP scripts that can be launched to perform data export/import.
+Supports the following DB: mysql, sql server. 
+Generated scripts work require mysqli and sqsrv PHP extensions installed.
+## HOW TO USE IT
+Run the class **Gui.java** and then choose the appropriate connection parameters. Then go to *File...->Connect to DB*.
+![](https://albertof.com/img/dbmigrator/-1.png)
+Choose one table from the source and the destination DB from the dropdown.
+![](https://albertof.com/img/dbmigrator/0.png)
+Go to *File...->Save and get scripts*. Then open the file report.xls inside dbmigrator/ folder.
+![](https://albertof.com/img/dbmigrator/1.png)
+Copy and launch the ALTER TABLE statements to synchronize database table definitions (if some fields are missing in one table).
+Go to *File...->Connect to DB* and choose the fields to map.
+![](https://albertof.com/img/dbmigrator/2.png)
+Go to *File...->Save and get scripts*. After that, go into dbmigrator/script folder. This is the folder that contains the PHP script to launch for DB import/export.
+![](https://albertof.com/img/dbmigrator/3.png)
+If you make changes to the DB connection parameters, always go to *File...->Connect to DB* and re-choose the correct tables/fields.
+You can also convert multiple table going to *File...->Add mapping*.
+## WIP
+Add support to Oracle DB.
