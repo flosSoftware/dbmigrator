@@ -220,12 +220,12 @@ public class DBMigrator {
 
 				System.out.println("table " + string + " will be analyzed...");
 				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap, dbMeta, dbMeta2);
-
+				messageHtml += "import/import_" + tables1.getCorresponding(string)+"<br/>";
 				batchScript += "require('" + "import/import_" + tables1.getCorresponding(string) + ".php');\n";
 			} else if (dbMeta2.getTableSize(string) == 0 && tables1.contains(string)) {
 				System.out.println("table " + string + " is empty");
 				analyzeTable(workbook, tables1.getCorresponding(string), string, prop1, prop2, map, invMap, dbMeta, dbMeta2);
-				messageHtml = "import/import_" + tables1.getCorresponding(string);
+				messageHtml += "import/import_" + tables1.getCorresponding(string)+"<br/>";
 				batchScript += "require('" + "import/import_" + tables1.getCorresponding(string) + ".php');\n";
 			} else {
 				System.out.println("table " + string + " not present on the other db");

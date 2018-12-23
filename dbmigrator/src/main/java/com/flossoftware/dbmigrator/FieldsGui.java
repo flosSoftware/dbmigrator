@@ -1,6 +1,7 @@
 package com.flossoftware.dbmigrator;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -91,14 +92,14 @@ public class FieldsGui extends Composite {
 				shell.redraw();
 			}
 		});
-		removeBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+		removeBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		removeBtn.setText("Remove Mapping");
 		this.setData("rmBtn", removeBtn);
 
 		tableTbl = new Table(this, SWT.BORDER | SWT.V_SCROLL);
 		tableTbl.setHeaderVisible(true);
 		tableTbl.setLinesVisible(true);
-
+		
 		tableTblCol1 = new TableColumn(tableTbl, SWT.NONE);
 		tableTblCol1.setText("Source Table");
 
@@ -133,10 +134,8 @@ public class FieldsGui extends Composite {
 					
 					int itemIdx = fieldTbl.getItemCount(); // !!! TableItem are 0-indexed !!!
 					
-
 					//System.out.println("getItemCount "+fieldTbl.getItemCount());
 
-					
 
 					final TableItem tableItem = new TableItem(fieldTbl, SWT.NONE);
 
@@ -174,7 +173,6 @@ public class FieldsGui extends Composite {
 
 					}
 					
-
 					editor = new TableEditor(fieldTbl);
 					Button btnRmField = new Button(fieldTbl, SWT.NONE);
 					btnRmField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -190,7 +188,6 @@ public class FieldsGui extends Composite {
 
 							int idx = (int) e.widget.getData();
 							
-
 							Combo cb = (Combo) fieldTbl.getItem(idx).getData("cb");
 							Combo cb2 = (Combo) fieldTbl.getItem(idx).getData("cb2");
 							Button btn = (Button) fieldTbl.getItem(idx).getData("btn");
@@ -198,8 +195,6 @@ public class FieldsGui extends Composite {
 							cb.dispose();
 							cb2.dispose();
 							btn.dispose();
-							
-							
 							
 							fieldTbl.remove(idx);
 							
@@ -213,8 +208,6 @@ public class FieldsGui extends Composite {
 							sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 							((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
-							
-							//fieldTbl.redraw();
 							shell.layout(true, true);
 							shell.redraw();
 
@@ -230,22 +223,14 @@ public class FieldsGui extends Composite {
 
 					fieldTbl.setSize(fieldTbl.getSize().x,
 							fieldTbl.getSize().y + tableItem.getBounds().height + fieldTbl.getBorderWidth());
-					//fieldTbl.redraw();
-					
+
 					sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
 					((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
 					
-
-//					int oldWidth = shell.getSize().x;
-
 					shell.layout(true, true);					
 					shell.redraw();
 
-//					final Point newSize = shell.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-//					newSize.x = oldWidth;
-
-					//shell.setSize(newSize);
 					
 
 				} catch (SQLException e1) {
@@ -254,7 +239,7 @@ public class FieldsGui extends Composite {
 			}
 		});
 
-		btnAddField.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
+		btnAddField.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		btnAddField.setText("Add Field");
 
 		fieldTbl = new Table(this, SWT.BORDER | SWT.V_SCROLL);
@@ -332,13 +317,13 @@ public class FieldsGui extends Composite {
 		List<String> l1;
 		List<String> l2;
 		try {
-			l1 = getGui().getD1().getTables();
+			l1 = getGui().getD1() != null ? getGui().getD1().getTables() : new ArrayList<String>();
 			String[] a1 = new String[l1.size()];
 			a1 = l1.toArray(a1);
 
 			fromTableSelect.setItems(a1);
 
-			l2 = getGui().getD2().getTables();
+			l2 = getGui().getD2() != null ? getGui().getD2().getTables() : new ArrayList<String>();
 			String[] a2 = new String[l2.size()];
 			a2 = l2.toArray(a2);
 
@@ -355,17 +340,19 @@ public class FieldsGui extends Composite {
 
 	public void size(Rectangle shellSize) {
 
-		Rectangle area = shellSize;
-
-		int width = area.width;
+		
+		int width = shellSize.width;
+		int height = shellSize.height;
 
 		// System.out.println(width);
+		
+		//Point comp = tableTbl.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-		tableTbl.setSize(width, area.height);
+		tableTbl.setSize(width, height);
 		tableTblCol1.setWidth(width / 2);
 		tableTblCol2.setWidth(width - tableTblCol1.getWidth());
 
-		fieldTbl.setSize(width, area.height);
+		fieldTbl.setSize(width, height);
 
 		fieldTblCol3.setWidth(80);
 		fieldTblCol1.setWidth((width - 80) / 2);
@@ -376,7 +363,7 @@ public class FieldsGui extends Composite {
 	public void setFromConfig(PropertiesConfiguration p, DBMetadata d1, DBMetadata d2, String tableFrom, String tableTo)
 			throws SQLException {
 
-		List<String> l1 = d1.getTables();
+		List<String> l1 = d1 == null ? new ArrayList<String>() : d1.getTables();
 
 		String[] a1 = new String[l1.size()];
 		a1 = l1.toArray(a1);
@@ -385,7 +372,7 @@ public class FieldsGui extends Composite {
 
 		fromTableSelect.select(l1.indexOf(tableFrom));
 
-		l1 = d2.getTables();
+		l1 = d2 == null ? new ArrayList<String>() : d2.getTables();
 
 		a1 = new String[l1.size()];
 		a1 = l1.toArray(a1);
@@ -393,8 +380,8 @@ public class FieldsGui extends Composite {
 
 		toTableSelect.select(l1.indexOf(tableTo));
 
-		l1 = d1.getColumnsForTable(tableFrom);
-		List<String> l2 = d2.getColumnsForTable(tableTo);
+		l1 = d1 == null ? new ArrayList<String>() : d1.getColumnsForTable(tableFrom);
+		List<String> l2 = d2 == null ? new ArrayList<String>() : d2.getColumnsForTable(tableTo);
 
 		int row = 0;
 
@@ -456,8 +443,7 @@ public class FieldsGui extends Composite {
 					btn.dispose();
 
 					fieldTbl.remove(idx);
-					//fieldTbl.redraw();
-
+					
 					// resync btn indexes with row indexes
 					for(int i = idx; i < fieldTbl.getItemCount(); i++) {
 						TableItem item = fieldTbl.getItem(i);
@@ -466,7 +452,7 @@ public class FieldsGui extends Composite {
 					}
 					
 					
-					//fieldTbl.redraw();
+					
 					shell.layout(true, true);
 					shell.redraw();
 
@@ -481,17 +467,6 @@ public class FieldsGui extends Composite {
 			// btnRmField.setSize(fieldTblCol3.getWidth(), combo_2.getItemHeight());
 			tableItem.setData("btn", btnRmField);
 
-			// table.setSize(
-			// table.getSize().x,
-			// table.getSize().y + tableItem.getBounds().height
-			// + table.getBorderWidth());
-			// table.redraw();
-
-			// getParent().layout(true, true);
-			// final Point newSize = getParent().computeSize(SWT.DEFAULT,
-			// SWT.DEFAULT, true);
-			//
-			// getParent().setSize(newSize);
 
 		}
 

@@ -1,5 +1,6 @@
 package com.flossoftware.dbmigrator;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ public class ConfigGui extends Composite {
 	public Text textConn;
 	public Text textConn2;
 	public Combo comboDriver;
-//	public Combo comboOverride;
 	public Button btnNuID;
 	public boolean isToConfig;
 	public AbstractFileConfiguration configProp;
@@ -51,7 +51,7 @@ public class ConfigGui extends Composite {
 
 		this.gui = gui;
 
-		Monitor mon = Display.getDefault().getMonitors()[0];
+//		Monitor mon = Display.getDefault().getMonitors()[0];
 
 		isToConfig = aIsToConfig;
 
@@ -65,9 +65,9 @@ public class ConfigGui extends Composite {
 		lblFile.setText("File");
 
 		Label lblPath = new Label(this, SWT.NONE);
-		GridData g2 = new GridData(SWT.RIGHT, SWT.CENTER, true, false, 2, 1);
+		GridData g2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 
-		g2.widthHint = mon.getBounds().width / 2 - 200;
+		//g2.widthHint = mon.getBounds().width / 2 - 200;
 		lblPath.setLayoutData(g2);
 		lblPath.setText(pPath);
 
@@ -79,7 +79,7 @@ public class ConfigGui extends Composite {
 				"oracle.jdbc.driver.OracleDriver" };
 		ArrayList<String> s1 = new ArrayList<String>(Arrays.asList(s));
 
-		comboDriver = new Combo(this, SWT.NONE);
+		comboDriver = new Combo(this, SWT.READ_ONLY);
 		comboDriver.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
@@ -140,7 +140,7 @@ public class ConfigGui extends Composite {
 		lblPw.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblPw.setText("Pw");
 
-		textPw = new Text(this, SWT.BORDER);
+		textPw = new Text(this, SWT.PASSWORD | SWT.BORDER);
 		textPw.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		Label lblConn = new Label(this, SWT.NONE);
 		lblConn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -152,22 +152,7 @@ public class ConfigGui extends Composite {
 
 		textConn = new Text(this, SWT.BORDER);
 		textConn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-/*
-		Label lblOverride = new Label(this, SWT.NONE);
-		lblOverride.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		lblOverride.setText("Destination Platform");
 
-		comboOverride = new Combo(this, SWT.NONE);
-
-		String[] s2 = new String[] { "", "sugar" };
-		ArrayList<String> s3 = new ArrayList<String>(Arrays.asList(s2));
-		comboOverride.setItems(s2);
-		comboOverride.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		if (!isToConfig) {
-			lblOverride.setVisible(false);
-			comboOverride.setVisible(false);
-		}
-*/
 		Label lblNuID = new Label(this, SWT.NONE);
 		lblNuID.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblNuID.setText("New ID");
@@ -178,8 +163,7 @@ public class ConfigGui extends Composite {
 		}
 
 		comboDriver.select(s1.indexOf(configProp.getString("driver")));
-//		if (isToConfig)
-//			comboOverride.select(s3.indexOf(configProp.getString("server_type_override")));
+
 		textDB.setText(configProp.getString("database"));
 		textIP.setText(configProp.getString("ip"));
 		textPw.setText(configProp.getString("password"));
@@ -203,8 +187,6 @@ public class ConfigGui extends Composite {
 
 		if (comboDriver.getSelectionIndex() > -1)
 			h.put("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
-//		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-//			h.put("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		h.put("database", textDB.getText());
 		h.put("ip", textIP.getText());
 		h.put("password", textPw.getText());
@@ -217,34 +199,32 @@ public class ConfigGui extends Composite {
 		return h;
 	}
 
-	public DBMetadata dbConnect(boolean refreshOnlyLastCompo) {
+	public DBMetadata dbConnect(boolean refreshOnlyLastCompo) throws ClassNotFoundException, SQLException {
 		DBMetadata dbMeta = null;
-		try {
-			dbMeta = new DBMetadata(getPropHashMap());
+	
+		dbMeta = new DBMetadata(getPropHashMap());
 
-			List<String> l1 = dbMeta.getTables();
+		List<String> l1 = dbMeta.getTables();
 
-			String[] a1 = new String[l1.size()];
-			a1 = l1.toArray(a1);
+		String[] a1 = new String[l1.size()];
+		a1 = l1.toArray(a1);
 
-			if (refreshOnlyLastCompo) {
-				FieldsGui campiGui = gui.fieldsGuiList.get(gui.fieldsGuiList.size() - 1);
+		if (refreshOnlyLastCompo) {
+			FieldsGui campiGui = gui.fieldsGuiList.get(gui.fieldsGuiList.size() - 1);
+			if (!isToConfig)
+				campiGui.fromTableSelect.setItems(a1);
+			else
+				campiGui.toTableSelect.setItems(a1);
+		} else
+
+			for (FieldsGui campiGui : gui.fieldsGuiList) {
 				if (!isToConfig)
 					campiGui.fromTableSelect.setItems(a1);
 				else
 					campiGui.toTableSelect.setItems(a1);
-			} else
+			}
 
-				for (FieldsGui campiGui : gui.fieldsGuiList) {
-					if (!isToConfig)
-						campiGui.fromTableSelect.setItems(a1);
-					else
-						campiGui.toTableSelect.setItems(a1);
-				}
-
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+		
 		return dbMeta;
 	}
 
@@ -252,8 +232,6 @@ public class ConfigGui extends Composite {
 
 		if (comboDriver.getSelectionIndex() > -1)
 			configProp.setProperty("driver", comboDriver.getItem(comboDriver.getSelectionIndex()));
-//		if (isToConfig && comboOverride.getSelectionIndex() > -1)
-//			configProp.setProperty("server_type_override", comboOverride.getItem(comboOverride.getSelectionIndex()));
 		configProp.setProperty("database", textDB.getText());
 		configProp.setProperty("ip", textIP.getText());
 		configProp.setProperty("password", textPw.getText());

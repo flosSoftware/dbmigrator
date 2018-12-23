@@ -69,23 +69,19 @@ public class DBMetadata {
 		this.setUser(prop.getString("user"));
 		this.setPassword(prop.getString("password"));
 		// this.setTable(prop.getString("table"));
+		
 		try {
 			Class.forName(getDriver());
 		} catch (ClassNotFoundException e) {
-
-			System.out.println("JDBC Driver " + getDriver() + " not found!!!");
-			e.printStackTrace();
-			return;
-
+			throw e;
 		}
+		
 		try {
 			this.setConnection2(DriverManager.getConnection(getConnection(),
 					getUser(), getPassword()));
 		} catch (SQLException e) {
-
-			System.out.println("Connection Failed!!!");
-			e.printStackTrace();
-			return;
+			this.setConnection2(null);
+			throw e;
 		}
 		
 		//System.out.println(this);
@@ -108,8 +104,7 @@ public class DBMetadata {
 		} catch (ClassNotFoundException e) {
 
 			System.out.println("JDBC Driver " + getDriver() + " not found!!!");
-			e.printStackTrace();
-			return;
+			throw e;
 
 		}
 		try {
@@ -117,9 +112,8 @@ public class DBMetadata {
 					getUser(), getPassword()));
 		} catch (SQLException e) {
 
-			System.out.println("Connection Failed!!!");
-			e.printStackTrace();
-			return;
+			this.setConnection2(null);
+			throw e;
 
 		}
 	}
