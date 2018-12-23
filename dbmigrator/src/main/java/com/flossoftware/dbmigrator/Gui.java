@@ -30,7 +30,7 @@ import org.mihalis.opal.notify.Notifier;
 import jxl.write.WriteException;
 
 public class Gui {
-
+ 
 	public List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
 	private DBMetadata d1;
 	private DBMetadata d2;
