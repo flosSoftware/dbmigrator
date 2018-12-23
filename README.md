@@ -9,12 +9,12 @@ Run the class **Gui.java** and then choose the appropriate connection parameters
 ![](https://albertof.com/img/dbmigrator/-1.png)
 Choose one table from the source and the destination DB from the dropdown.
 ![](https://albertof.com/img/dbmigrator/0.png)
-Go to *File...->Save and get scripts*. Then open the file report.xls inside dbmigrator/ folder.
+Go to *File...->Save and get scripts*. Then open the file **report.xls** inside **dbmigrator/** folder.
 ![](https://albertof.com/img/dbmigrator/1.png)
 Copy and launch the ALTER TABLE statements to synchronize database table definitions (if some fields are missing in one table).
 Go to *File...->Connect to DB* and choose the fields to map.
 ![](https://albertof.com/img/dbmigrator/2.png)
-Go to *File...->Save and get scripts*. After that, go into dbmigrator/script folder. This is the folder that contains the PHP script to launch for DB import/export.
+Go to *File...->Save and get scripts*. After that, go into **dbmigrator/script** folder. This is the folder that contains the PHP script to launch for DB import/export.
 ![](https://albertof.com/img/dbmigrator/3.png)
 If you make changes to the DB connection parameters, always go to *File...->Connect to DB* and re-choose the correct tables/fields.
 You can also convert multiple table going to *File...->Add mapping*.
