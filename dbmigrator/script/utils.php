@@ -17,6 +17,10 @@ function getTypeInstance($type)
             }
 }
 
+function from_html($string, $encoding = 'UTF-8')
+{
+    return htmlentities($input, ENT_QUOTES | ENT_HTML5, $encoding);
+}
 
 function isNullOrEmptyString($string)
 {
