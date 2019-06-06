@@ -1,0 +1,6 @@
+/target/
+config/*.properties
+map/*
+script/import.php
+script/import/*
+report/*

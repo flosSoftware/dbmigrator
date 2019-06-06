@@ -1,0 +1,9 @@
+email
+passwd
+login_id
+full_name
+
+[missing fields] 
+full_name
+login_id
+passwd
