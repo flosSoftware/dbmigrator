@@ -31,25 +31,21 @@ public class FieldsGui extends Composite {
 	 * @param style
 	 */
 
-	public Shell shell;
+	private Shell shell;
 
-	public Combo fromTableSelect;
-	public Combo toTableSelect;
+	private Combo fromTableSelect;
+	private Combo toTableSelect;
 
-	public Table fieldTbl;
-	public TableColumn fieldTblCol1;
-	public TableColumn fieldTblCol2;
-	public TableColumn fieldTblCol3;
+	private Table fieldTbl;
+	private TableColumn fieldTblCol1;
+	private TableColumn fieldTblCol2;
+	private TableColumn fieldTblCol3;
 
-	public Table tableTbl;
-	public TableColumn tableTblCol1;
-	public TableColumn tableTblCol2;
+	private Table tableTbl;
+	private TableColumn tableTblCol1;
+	private TableColumn tableTblCol2;
 
 	private Gui gui;
-	private ScrolledComposite sc;
-	private Composite parent;
-
-
 	private int fieldsGuiListIndex;
 
 	public FieldsGui(final Composite parent, final ScrolledComposite sc, final Shell shell, int style, ConfigGui configGuiFrom,
@@ -62,10 +58,6 @@ public class FieldsGui extends Composite {
 
 		this.shell = shell;
 		
-		this.parent = parent;
-		
-		this.sc = sc;
-
 		final FieldsGui dis = this;
 		
 		
@@ -84,7 +76,7 @@ public class FieldsGui extends Composite {
 				dis.dispose();
 				
 				sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-				((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+				((GridData)sc.getLayoutData()).heightHint = gui.getFieldsGuiList().get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
 
 				shell.layout(true, true);
@@ -131,15 +123,15 @@ public class FieldsGui extends Composite {
 
 				try {
 					
-					int itemIdx = fieldTbl.getItemCount(); // !!! TableItem are 0-indexed !!!
+					int itemIdx = getFieldTbl().getItemCount(); // !!! TableItem are 0-indexed !!!
 					
 					//System.out.println("getItemCount "+fieldTbl.getItemCount());
 
 
-					final TableItem tableItem = new TableItem(fieldTbl, SWT.NONE);
+					final TableItem tableItem = new TableItem(getFieldTbl(), SWT.NONE);
 
-					TableEditor editor = new TableEditor(fieldTbl);
-					Combo cb = new Combo(fieldTbl, SWT.NONE);
+					TableEditor editor = new TableEditor(getFieldTbl());
+					Combo cb = new Combo(getFieldTbl(), SWT.NONE);
 					editor.grabHorizontal = true;
 					editor.setEditor(cb, tableItem, 0);
 					tableItem.setData("cb", cb);
@@ -155,8 +147,8 @@ public class FieldsGui extends Composite {
 
 					}
 
-					editor = new TableEditor(fieldTbl);
-					Combo cb2 = new Combo(fieldTbl, SWT.NONE);
+					editor = new TableEditor(getFieldTbl());
+					Combo cb2 = new Combo(getFieldTbl(), SWT.NONE);
 					editor.grabHorizontal = true;
 					editor.setEditor(cb2, tableItem, 1);
 					tableItem.setData("cb2", cb2);
@@ -172,8 +164,8 @@ public class FieldsGui extends Composite {
 
 					}
 					
-					editor = new TableEditor(fieldTbl);
-					Button btnRmField = new Button(fieldTbl, SWT.NONE);
+					editor = new TableEditor(getFieldTbl());
+					Button btnRmField = new Button(getFieldTbl(), SWT.NONE);
 					btnRmField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 					btnRmField.setText("Remove");
 
@@ -187,25 +179,25 @@ public class FieldsGui extends Composite {
 
 							int idx = (int) e.widget.getData();
 							
-							Combo cb = (Combo) fieldTbl.getItem(idx).getData("cb");
-							Combo cb2 = (Combo) fieldTbl.getItem(idx).getData("cb2");
-							Button btn = (Button) fieldTbl.getItem(idx).getData("btn");
+							Combo cb = (Combo) getFieldTbl().getItem(idx).getData("cb");
+							Combo cb2 = (Combo) getFieldTbl().getItem(idx).getData("cb2");
+							Button btn = (Button) getFieldTbl().getItem(idx).getData("btn");
 
 							cb.dispose();
 							cb2.dispose();
 							btn.dispose();
 							
-							fieldTbl.remove(idx);
+							getFieldTbl().remove(idx);
 							
 							// resync btn indexes with row indexes
-							for(int i = idx; i < fieldTbl.getItemCount(); i++) {
-								TableItem item = fieldTbl.getItem(i);
+							for(int i = idx; i < getFieldTbl().getItemCount(); i++) {
+								TableItem item = getFieldTbl().getItem(i);
 								//System.out.println("setting data of item "+ i + " to "+ i);								
 								((Button)item.getData("btn")).setData(i);
 							}
 							
 							sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-							((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+							((GridData)sc.getLayoutData()).heightHint = gui.getFieldsGuiList().get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
 							shell.layout(true, true);
 							shell.redraw();
@@ -220,11 +212,11 @@ public class FieldsGui extends Composite {
 					//System.out.println("SET Row Index:" + itemIdx);
 					tableItem.setData("btn", btnRmField);
 
-					fieldTbl.setSize(fieldTbl.getSize().x,
-							fieldTbl.getSize().y + tableItem.getBounds().height + fieldTbl.getBorderWidth());
+					getFieldTbl().setSize(getFieldTbl().getSize().x,
+							getFieldTbl().getSize().y + tableItem.getBounds().height + getFieldTbl().getBorderWidth());
 
 					sc.setMinHeight(parent.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-					((GridData)sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+					((GridData)sc.getLayoutData()).heightHint = gui.getFieldsGuiList().get(0).computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
 
 					
 					shell.layout(true, true);					
@@ -241,24 +233,24 @@ public class FieldsGui extends Composite {
 		btnAddField.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
 		btnAddField.setText("Add Field");
 
-		fieldTbl = new Table(this, SWT.BORDER | SWT.V_SCROLL);
-		fieldTbl.setHeaderVisible(true);
-		fieldTbl.setLinesVisible(true);
+		setFieldTbl(new Table(this, SWT.BORDER | SWT.V_SCROLL));
+		getFieldTbl().setHeaderVisible(true);
+		getFieldTbl().setLinesVisible(true);
 
-		fieldTblCol1 = new TableColumn(fieldTbl, SWT.NONE);
+		fieldTblCol1 = new TableColumn(getFieldTbl(), SWT.NONE);
 		fieldTblCol1.setText("Source Field");
 
-		fieldTblCol2 = new TableColumn(fieldTbl, SWT.NONE);
+		fieldTblCol2 = new TableColumn(getFieldTbl(), SWT.NONE);
 		fieldTblCol2.setText("Destination Field");
 
-		fieldTblCol3 = new TableColumn(fieldTbl, SWT.NONE);
+		fieldTblCol3 = new TableColumn(getFieldTbl(), SWT.NONE);
 		fieldTblCol3.setText("");
 
 		fromTableSelect.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
-				TableItem[] items = fieldTbl.getItems();
+				TableItem[] items = getFieldTbl().getItems();
 				DBMetadata dbMeta = dis.getGui().getD1();
 
 				try {
@@ -288,7 +280,7 @@ public class FieldsGui extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
 
-				TableItem[] items = fieldTbl.getItems();
+				TableItem[] items = getFieldTbl().getItems();
 				DBMetadata dbMeta = dis.getGui().getD2();
 
 				try {
@@ -351,7 +343,7 @@ public class FieldsGui extends Composite {
 		tableTblCol1.setWidth(width / 2);
 		tableTblCol2.setWidth(width - tableTblCol1.getWidth());
 
-		fieldTbl.setSize(width, height);
+		getFieldTbl().setSize(width, height);
 
 		fieldTblCol3.setWidth(80);
 		fieldTblCol1.setWidth((width - 80) / 2);
@@ -388,10 +380,10 @@ public class FieldsGui extends Composite {
 			String key = (String) iterator.next();
 			String value = p.getString(key);
 
-			TableItem tableItem = new TableItem(fieldTbl, SWT.NONE);
+			TableItem tableItem = new TableItem(getFieldTbl(), SWT.NONE);
 
-			TableEditor editor = new TableEditor(fieldTbl);
-			Combo combo_2 = new Combo(fieldTbl, SWT.NONE);
+			TableEditor editor = new TableEditor(getFieldTbl());
+			Combo combo_2 = new Combo(getFieldTbl(), SWT.NONE);
 			a1 = new String[l1.size()];
 			a1 = l1.toArray(a1);
 
@@ -403,8 +395,8 @@ public class FieldsGui extends Composite {
 			editor.setEditor(combo_2, tableItem, 0);
 			tableItem.setData("cb", combo_2);
 
-			editor = new TableEditor(fieldTbl);
-			Combo combo_3 = new Combo(fieldTbl, SWT.NONE);
+			editor = new TableEditor(getFieldTbl());
+			Combo combo_3 = new Combo(getFieldTbl(), SWT.NONE);
 
 			a1 = new String[l2.size()];
 			a1 = l2.toArray(a1);
@@ -417,9 +409,9 @@ public class FieldsGui extends Composite {
 			editor.setEditor(combo_3, tableItem, 1);
 			tableItem.setData("cb2", combo_3);
 
-			editor = new TableEditor(fieldTbl);
+			editor = new TableEditor(getFieldTbl());
 
-			Button btnRmField = new Button(fieldTbl, SWT.NONE);
+			Button btnRmField = new Button(getFieldTbl(), SWT.NONE);
 			btnRmField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			btnRmField.setText("Remove");
 
@@ -433,19 +425,19 @@ public class FieldsGui extends Composite {
 
 					int idx = (int) e.widget.getData();
 
-					Combo cb = (Combo) fieldTbl.getItem(idx).getData("cb");
-					Combo cb2 = (Combo) fieldTbl.getItem(idx).getData("cb2");
-					Button btn = (Button) fieldTbl.getItem(idx).getData("btn");
+					Combo cb = (Combo) getFieldTbl().getItem(idx).getData("cb");
+					Combo cb2 = (Combo) getFieldTbl().getItem(idx).getData("cb2");
+					Button btn = (Button) getFieldTbl().getItem(idx).getData("btn");
 
 					cb.dispose();
 					cb2.dispose();
 					btn.dispose();
 
-					fieldTbl.remove(idx);
+					getFieldTbl().remove(idx);
 					
 					// resync btn indexes with row indexes
-					for(int i = idx; i < fieldTbl.getItemCount(); i++) {
-						TableItem item = fieldTbl.getItem(i);
+					for(int i = idx; i < getFieldTbl().getItemCount(); i++) {
+						TableItem item = getFieldTbl().getItem(i);
 						//System.out.println("setting data of item "+ i + " to "+ i);								
 						((Button)item.getData("btn")).setData(i);
 					}
@@ -483,6 +475,30 @@ public class FieldsGui extends Composite {
 
 	public void setGui(Gui gui) {
 		this.gui = gui;
+	}
+
+	public Combo getFromTableSelect() {
+		return fromTableSelect;
+	}
+
+	public void setFromTableSelect(Combo fromTableSelect) {
+		this.fromTableSelect = fromTableSelect;
+	}
+
+	public Combo getToTableSelect() {
+		return toTableSelect;
+	}
+
+	public void setToTableSelect(Combo toTableSelect) {
+		this.toTableSelect = toTableSelect;
+	}
+
+	public Table getFieldTbl() {
+		return fieldTbl;
+	}
+
+	public void setFieldTbl(Table fieldTbl) {
+		this.fieldTbl = fieldTbl;
 	}
 
 }

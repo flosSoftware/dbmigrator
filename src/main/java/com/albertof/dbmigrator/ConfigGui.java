@@ -25,17 +25,17 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 
 public class ConfigGui extends Composite {
-	public Text textDB;
-	public Text textIP;
-	public Text textPort;
-	public Text textUser;
-	public Text textPw;
-	public Text textConn;
-	public Text textConn2;
-	public Combo comboDriver;
-	public Button btnNuID;
-	public boolean isToConfig;
-	public AbstractFileConfiguration configProp;
+	private Text textDB;
+	private Text textIP;
+	private Text textPort;
+	private Text textUser;
+	private Text textPw;
+	private Text textConn;
+	private Text textConn2;
+	private Combo comboDriver;
+	private Button btnNuID;
+	private boolean isToConfig;
+	private AbstractFileConfiguration configProp;
 	private Gui gui;
 
 	/**
@@ -210,18 +210,18 @@ public class ConfigGui extends Composite {
 		a1 = l1.toArray(a1);
 
 		if (refreshOnlyLastCompo) {
-			FieldsGui campiGui = gui.fieldsGuiList.get(gui.fieldsGuiList.size() - 1);
+			FieldsGui campiGui = gui.getFieldsGuiList().get(gui.getFieldsGuiList().size() - 1);
 			if (!isToConfig)
-				campiGui.fromTableSelect.setItems(a1);
+				campiGui.getFromTableSelect().setItems(a1);
 			else
-				campiGui.toTableSelect.setItems(a1);
+				campiGui.getToTableSelect().setItems(a1);
 		} else
 
-			for (FieldsGui campiGui : gui.fieldsGuiList) {
+			for (FieldsGui campiGui : gui.getFieldsGuiList()) {
 				if (!isToConfig)
-					campiGui.fromTableSelect.setItems(a1);
+					campiGui.getFromTableSelect().setItems(a1);
 				else
-					campiGui.toTableSelect.setItems(a1);
+					campiGui.getToTableSelect().setItems(a1);
 			}
 
 		

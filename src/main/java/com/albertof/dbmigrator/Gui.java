@@ -30,7 +30,7 @@ import jxl.write.WriteException;
 
 public class Gui {
  
-	public List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
+	private List<FieldsGui> fieldsGuiList = new ArrayList<FieldsGui>();
 	private DBMetadata d1;
 	private DBMetadata d2;
 
@@ -44,9 +44,9 @@ public class Gui {
 
 		try {
 			PropertiesConfiguration tableProp = new PropertiesConfiguration();
-			for (FieldsGui fieldsGui : fieldsGuiList) {
-				Combo combo = fieldsGui.fromTableSelect;
-				Combo combo_1 = fieldsGui.toTableSelect;
+			for (FieldsGui fieldsGui : getFieldsGuiList()) {
+				Combo combo = fieldsGui.getFromTableSelect();
+				Combo combo_1 = fieldsGui.getToTableSelect();
 
 				if (combo_1.getSelectionIndex() >= 0 && combo.getSelectionIndex() >= 0) {
 
@@ -55,7 +55,7 @@ public class Gui {
 
 					PropertiesConfiguration tableProp2 = new PropertiesConfiguration();
 
-					TableItem[] items = fieldsGui.fieldTbl.getItems();
+					TableItem[] items = fieldsGui.getFieldTbl().getItems();
 
 					for (TableItem tItem : items) {
 
@@ -176,19 +176,19 @@ public class Gui {
 	
 				p = new PropertiesConfiguration("map/" + tableTo + ".properties");
 	
-				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.fieldsGuiList, gui);
+				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.getFieldsGuiList(), gui);
 				composite3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 				composite3.setFromConfig(p, gui.getD1(), gui.getD2(), tableFrom, tableTo);
 				composite3.size(shellSize);
 	
 			}
 	
-			if (gui.fieldsGuiList.size() == 0) {
+			if (gui.getFieldsGuiList().size() == 0) {
 	
-				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.fieldsGuiList, gui);
+				FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.getFieldsGuiList(), gui);
 				composite3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 				composite3.size(shellSize);
-				gui.fieldsGuiList.add(composite3);
+				gui.getFieldsGuiList().add(composite3);
 				sc.setContent(composite3);
 			}
 	
@@ -202,7 +202,7 @@ public class Gui {
 	
 			sc.setLayoutData(gd);
 	
-			((Button) gui.fieldsGuiList.get(0).getData("rmBtn")).setVisible(false);
+			((Button) gui.getFieldsGuiList().get(0).getData("rmBtn")).setVisible(false);
 	
 			shell.pack();
 	
@@ -260,13 +260,13 @@ public class Gui {
 	
 					}
 	
-					FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.fieldsGuiList,
+					FieldsGui composite3 = new FieldsGui(c, sc, shell, SWT.NONE, composite, composite2, gui.getFieldsGuiList(),
 							gui);
 					composite3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 					composite3.size(shellSize);
 	
 					sc.setMinHeight(c.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
-					((GridData) sc.getLayoutData()).heightHint = gui.fieldsGuiList.get(0).computeSize(SWT.DEFAULT,
+					((GridData) sc.getLayoutData()).heightHint = gui.getFieldsGuiList().get(0).computeSize(SWT.DEFAULT,
 							SWT.DEFAULT).y;
 	
 					shell.pack();
@@ -283,7 +283,7 @@ public class Gui {
 	
 						gui.saveProps(composite, composite2);
 	
-						if (gui.fieldsGuiList.size() > 0)
+						if (gui.getFieldsGuiList().size() > 0)
 							DBMigrator.doTheJob(gui.d1, gui.d2);
 	
 					} catch (ConfigurationException | ClassNotFoundException | WriteException | IOException
@@ -315,6 +315,14 @@ public class Gui {
 
 	public void setD2(DBMetadata d2) {
 		this.d2 = d2;
+	}
+
+	public List<FieldsGui> getFieldsGuiList() {
+		return fieldsGuiList;
+	}
+
+	public void setFieldsGuiList(List<FieldsGui> fieldsGuiList) {
+		this.fieldsGuiList = fieldsGuiList;
 	}
 
 }
