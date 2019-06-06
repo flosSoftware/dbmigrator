@@ -18,5 +18,7 @@ Go to *File...->Save and get scripts*. After that, go into **dbmigrator/script**
 ![](https://albertof.com/img/dbmigrator/3.png)
 If you make changes to the DB connection parameters, always go to *File...->Connect to DB* and re-choose the correct tables/fields.
 You can also convert multiple table going to *File...->Add mapping*.
+## Project configuration
+This project has been created with Eclipse Oxygen and m2eclipse (maven v. 3.3.9). There is a local maven repository in local-repo/ directory because some libs are not available as maven dependencies.
 ## WIP
 Add support to Oracle DB.
